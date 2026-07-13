@@ -74,7 +74,7 @@ class JurnalMengajarController extends Controller
         });
 
         return redirect()
-            ->route('dashboard')
-            ->with('success', 'Pembelajaran berhasil diselesaikan.');
+        ->route('penilaian.create', $sesi)
+        ->with('success', 'Silakan lanjut mengisi penilaian sikap.');
     }
 }
