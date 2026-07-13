@@ -1,36 +1,56 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+<head>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <meta charset="utf-8">
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
-        </div>
-    </body>
+    <title>SIKAP ESPENERO</title>
+
+    @vite(['resources/css/app.css','resources/js/app.js'])
+
+</head>
+
+<body class="bg-gray-100">
+
+<div class="flex min-h-screen">
+
+    {{-- SIDEBAR --}}
+    @include('layouts.partials.sidebar')
+
+    <div class="flex-1 flex flex-col">
+
+        {{-- TOPBAR --}}
+        @include('layouts.partials.topbar')
+
+        {{-- CONTENT --}}
+        <main class="flex-1 p-6">
+
+            @if(isset($header))
+
+                <div class="mb-6">
+
+                    {{ $header }}
+
+                </div>
+
+            @endif
+
+            {{ $slot }}
+
+        </main>
+
+        {{-- FOOTER --}}
+        @include('layouts.partials.footer')
+
+    </div>
+
+</div>
+
+</body>
+
 </html>

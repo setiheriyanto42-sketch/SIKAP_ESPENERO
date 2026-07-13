@@ -1,91 +1,294 @@
 <x-app-layout>
+
     <x-slot name="header">
         <h2 class="font-bold text-2xl text-gray-800">
-            🎓 SIKAP ESPENERO
+            🎓 Dashboard SIKAP ESPENERO
         </h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto px-4">
 
-            <div class="bg-white shadow rounded-lg p-6 mb-6">
-                <h2 class="text-2xl font-bold text-blue-700">
+            {{-- HEADER --}}
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg text-white p-6 mb-6">
+
+                <h1 class="text-3xl font-bold">
+                    Selamat Datang,
+                    {{ $user->guru->nama ?? $user->name }}
+                </h1>
+
+                <p class="mt-2">
                     Sistem Informasi Kehadiran dan Karakter
-                </h2>
-
-                <p class="text-gray-600">
-                    SMP Negeri 2 Jatiroto
                 </p>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                @if($data['tahunAktif'])
 
-                <div class="bg-blue-500 text-gray rounded-lg p-5">
-                    <h3 class="text-lg font-bold">👨‍🏫 Guru</h3>
-                    <p class="text-3xl mt-2">0</p>
-                </div>
+                    <div class="mt-4">
 
-                <div class="bg-green-500 text-gray rounded-lg p-5">
-                    <h3 class="text-lg font-bold">👨‍🎓 Siswa</h3>
-                    <p class="text-3xl mt-2">0</p>
-                </div>
+                        <span class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
 
-                <div class="bg-yellow-500 text-gray rounded-lg p-5">
-                    <h3 class="text-lg font-bold">🏫 Kelas</h3>
-                    <p class="text-3xl mt-2">18</p>
-                </div>
+                            Tahun Ajaran :
+                            {{ $data['tahunAktif']->tahun_ajaran }}
+                            |
+                            Semester
+                            {{ $data['tahunAktif']->semester }}
 
-                <div class="bg-red-500 text-gray rounded-lg p-5">
-                    <h3 class="text-lg font-bold">📚 Mata Pelajaran</h3>
-                    <p class="text-3xl mt-2">11</p>
-                </div>
+                        </span>
+
+                    </div>
+
+                @endif
 
             </div>
 
-            <div class="mt-8 bg-white shadow rounded-lg p-6">
+            {{-- DASHBOARD ADMIN --}}
+            @if($user->isAdmin())
 
-                <h3 class="text-xl font-bold mb-4">
-                    Menu Utama
-                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="bg-blue-600 text-white rounded-xl shadow p-5">
 
-                    <button class="bg-blue-600 hover:bg-blue-700 text-gray p-4 rounded-lg">
-                        Data Guru
-                    </button>
+                        <div>Guru</div>
 
-                    <button class="bg-green-600 hover:bg-green-700 text-gray p-4 rounded-lg">
-                        Data Siswa
-                    </button>
+                        <div class="text-4xl font-bold mt-2">
 
-                    <button class="bg-yellow-600 hover:bg-yellow-700 text-gray p-4 rounded-lg">
-                        Kehadiran
-                    </button>
+                            {{ $data['jumlahGuru'] }}
 
-                    <button class="bg-red-600 hover:bg-red-700 text-gray p-4 rounded-lg">
-                        Pelanggaran
-                    </button>
+                        </div>
 
-                    <button class="bg-purple-600 hover:bg-purple-700 text-gray p-4 rounded-lg">
-                        Disiplin
-                    </button>
+                    </div>
 
-                    <button class="bg-pink-600 hover:bg-pink-700 text-gray p-4 rounded-lg">
-                        Adab
-                    </button>
+                    <div class="bg-green-600 text-white rounded-xl shadow p-5">
 
-                    <button class="bg-indigo-600 hover:bg-indigo-700 text-gray p-4 rounded-lg">
-                        Etika
-                    </button>
+                        <div>Siswa</div>
 
-                    <button class="bg-gray-700 hover:bg-gray-800 text-gray p-4 rounded-lg">
-                        Laporan
-                    </button>
+                        <div class="text-4xl font-bold mt-2">
+
+                            {{ $data['jumlahSiswa'] }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="bg-yellow-500 text-white rounded-xl shadow p-5">
+
+                        <div>Kelas</div>
+
+                        <div class="text-4xl font-bold mt-2">
+
+                            {{ $data['jumlahKelas'] }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="bg-red-600 text-white rounded-xl shadow p-5">
+
+                        <div>Mata Pelajaran</div>
+
+                        <div class="text-4xl font-bold mt-2">
+
+                            {{ $data['jumlahMapel'] }}
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-            </div>
+            @endif
+
+
+            {{-- DASHBOARD GURU --}}
+            @if($user->guru)
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+
+                    <div class="bg-blue-600 text-white rounded-xl shadow p-5">
+
+                        <div>Jam Mengajar</div>
+
+                        <div class="text-4xl font-bold mt-2">
+
+                            {{ $data['jamMengajar'] }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="bg-green-600 text-white rounded-xl shadow p-5">
+
+                        <div>Kelas Diampu</div>
+
+                        <div class="text-4xl font-bold mt-2">
+
+                            {{ $data['kelasDiampu'] }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="bg-yellow-500 text-white rounded-xl shadow p-5">
+
+                        <div>Siswa Diampu</div>
+
+                        <div class="text-4xl font-bold mt-2">
+
+                            {{ $data['jumlahSiswaDiampu'] }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endif
+
+
+            {{-- WALI KELAS --}}
+            @if($data['isWaliKelas'])
+
+                <div class="bg-green-100 border border-green-400 rounded-xl p-5 mt-6">
+
+                    <h2 class="text-2xl font-bold text-green-700">
+
+                        ⭐ Anda adalah Wali Kelas
+
+                    </h2>
+
+                    <p class="mt-2">
+
+                        {{ $data['kelasPerwalian']->nama_kelas }}
+
+                    </p>
+
+                </div>
+
+            @endif
+
+
+            {{-- JADWAL HARI INI --}}
+            @if($user->guru)
+
+                <div class="bg-white rounded-xl shadow mt-6 p-6">
+
+                    <h2 class="text-2xl font-bold mb-5">
+
+                        📅 Jadwal Mengajar Hari Ini
+
+                    </h2>
+
+                    @forelse($jadwalHariIni as $jadwal)
+
+                        <div class="border rounded-xl p-5 mb-4">
+
+                            <div class="flex justify-between items-center">
+
+                                <div>
+
+                                    <h3 class="text-xl font-bold">
+
+                                        {{ $jadwal->guruMengajar->mataPelajaran->nama_mapel }}
+
+                                    </h3>
+
+                                    <p>
+
+                                        {{ $jadwal->guruMengajar->kelas->nama_kelas }}
+
+                                    </p>
+
+                                    <p class="text-gray-500">
+
+                                        {{ $jadwal->jam_mulai }}
+
+                                        -
+
+                                        {{ $jadwal->jam_selesai }}
+
+                                    </p>
+
+                                </div>
+
+                                <div class="text-right">
+
+                                    @if($jadwal->status_sesi=='Belum')
+
+                                        <span class="inline-block bg-gray-200 text-gray-700 px-3 py-1 rounded-full mb-3">
+
+                                            ⚪ BELUM DIMULAI
+
+                                        </span>
+
+                                        <br>
+
+                                        <a
+                                            href="{{ route('sesi.mulai',$jadwal) }}"
+                                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg">
+
+                                            🚀 MULAI MENGAJAR
+
+                                        </a>
+
+                                    @elseif($jadwal->status_sesi=='Sedang')
+
+                                        <span class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full mb-3">
+
+                                            🟡 SEDANG MENGAJAR
+
+                                        </span>
+
+                                        <br>
+
+                                        <a
+                                            href="{{ route('mengajar.index',$jadwal) }}"
+                                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg">
+
+                                            ▶ LANJUTKAN
+
+                                        </a>
+
+                                    @elseif($jadwal->status_sesi=='Selesai')
+
+                                        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full mb-3">
+
+                                            ✅ SELESAI
+
+                                        </span>
+
+                                        <br>
+
+                                        <button
+                                            class="bg-gray-400 text-white px-6 py-3 rounded-lg cursor-not-allowed"
+                                            disabled>
+
+                                            ✔ SUDAH SELESAI
+
+                                        </button>
+
+                                    @endif
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    @empty
+
+                        <div class="text-center text-gray-500">
+
+                            Tidak ada jadwal mengajar hari ini.
+
+                        </div>
+
+                    @endforelse
+
+                </div>
+
+            @endif
 
         </div>
     </div>
+
 </x-app-layout>
