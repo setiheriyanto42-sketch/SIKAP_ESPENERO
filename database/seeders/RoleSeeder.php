@@ -9,7 +9,11 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('roles')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        DB::table('roles')->delete();
+
+        DB::statement('ALTER TABLE roles AUTO_INCREMENT = 1;');
 
         DB::table('roles')->insert([
 
@@ -44,5 +48,7 @@ class RoleSeeder extends Seeder
             ],
 
         ]);
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
