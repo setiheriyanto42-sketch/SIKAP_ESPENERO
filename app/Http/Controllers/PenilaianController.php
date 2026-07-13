@@ -11,19 +11,31 @@ class PenilaianController extends Controller
     public function create(SesiMengajar $sesiMengajar)
     {
         $sesiMengajar->load([
+            'jadwalMengajar.guruMengajar.guru',
             'jadwalMengajar.guruMengajar.kelas',
+            'jadwalMengajar.guruMengajar.mataPelajaran',
             'kehadirans.siswa'
         ]);
 
-        $kehadirans = $sesiMengajar->kehadirans()
+        $kehadirans = $sesiMengajar
+            ->kehadirans()
             ->with('siswa')
             ->orderBy('siswa_id')
             ->get();
 
-        return view('penilaian.create', compact(
-            'sesiMengajar',
-            'kehadirans'
-        ));
+        $penilaians = Penilaian::where(
+            'sesi_mengajar_id',
+            $sesiMengajar->id
+        )->get()->keyBy('siswa_id');
+
+        return view(
+            'penilaian.create',
+            compact(
+                'sesiMengajar',
+                'kehadirans',
+                'penilaians'
+            )
+        );
     }
 
     public function store(Request $request, SesiMengajar $sesiMengajar)

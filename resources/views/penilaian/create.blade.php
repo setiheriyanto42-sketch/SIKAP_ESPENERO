@@ -73,23 +73,33 @@
 
                                     <td class="border px-3 py-2">
 
+                                        @php
+
+                                            $nilai = $penilaians[$hadir->siswa_id]->predikat ?? 'Baik';
+
+                                        @endphp
+
                                         <select
                                             name="predikat[{{ $hadir->siswa_id }}]"
                                             class="border rounded w-full">
 
-                                            <option value="Sangat Baik">
+                                            <option value="Sangat Baik"
+                                                {{ $nilai=='Sangat Baik' ? 'selected' : '' }}>
                                                 Sangat Baik
                                             </option>
 
-                                            <option value="Baik" selected>
+                                            <option value="Baik"
+                                                {{ $nilai=='Baik' ? 'selected' : '' }}>
                                                 Baik
                                             </option>
 
-                                            <option value="Cukup">
+                                            <option value="Cukup"
+                                                {{ $nilai=='Cukup' ? 'selected' : '' }}>
                                                 Cukup
                                             </option>
 
-                                            <option value="Perlu Pembinaan">
+                                            <option value="Perlu Pembinaan"
+                                                {{ $nilai=='Perlu Pembinaan' ? 'selected' : '' }}>
                                                 Perlu Pembinaan
                                             </option>
 
@@ -100,11 +110,11 @@
                                     <td class="border px-3 py-2">
 
                                         <input
-                                            type="text"
-                                            name="catatan[{{ $hadir->siswa_id }}]"
-                                            class="border rounded w-full"
-                                            placeholder="Catatan Guru">
-
+                                        type="text"
+                                        name="catatan[{{ $hadir->siswa_id }}]"
+                                        value="{{ $penilaians[$hadir->siswa_id]->catatan ?? '' }}"
+                                        class="border rounded w-full"
+                                        placeholder="Catatan Guru">
                                     </td>
 
                                 </tr>
