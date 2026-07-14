@@ -57,4 +57,9 @@ class SesiMengajar extends Model
     {
         return $this->hasOne(JurnalMengajar::class);
     }
+
+    public function penilaians()
+    {
+        return $this->hasMany(Penilaian::class);
+    }
 }

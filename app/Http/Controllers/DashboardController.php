@@ -21,6 +21,12 @@ class DashboardController extends Controller
 
         $jadwalHariIni = collect();
 
+        $statusMengajar = 'Belum Mengajar';
+
+        $jurnalBelum = 0;
+
+        $penilaianBelum = 0;
+
         $data = [
 
             // Dashboard Admin
@@ -91,6 +97,37 @@ class DashboardController extends Controller
             ->orderBy('jam_mulai')
             ->get();
 
+            foreach ($jadwalHariIni as $jadwal) {
+
+                $sesi = $jadwal->sesiMengajars()
+                    ->whereDate('tanggal', today())
+                    ->first();
+
+                if (!$sesi) {
+
+                    continue;
+
+                }
+
+                $statusMengajar = $sesi->status;
+
+                if (!$sesi->jurnal) {
+
+                    $jurnalBelum++;
+
+                }
+
+                if (
+                    $sesi->kehadirans()->count() >
+                    $sesi->penilaians()->count()
+                ) {
+
+                    $penilaianBelum++;
+
+                }
+
+            }
+
             /*
             |--------------------------------------------------------------------------
             | STATUS SETIAP JADWAL
@@ -150,11 +187,19 @@ class DashboardController extends Controller
 
         }
 
-        return view('dashboard', [
+        return view('dashboard',[
 
-            'user' => $user,
-            'data' => $data,
-            'jadwalHariIni' => $jadwalHariIni,
+            'user'=>$user,
+
+            'data'=>$data,
+
+            'jadwalHariIni'=>$jadwalHariIni,
+
+            'statusMengajar'=>$statusMengajar,
+
+            'jurnalBelum'=>$jurnalBelum,
+
+            'penilaianBelum'=>$penilaianBelum,
 
         ]);
     }

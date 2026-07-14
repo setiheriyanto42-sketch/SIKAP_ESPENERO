@@ -1,4 +1,4 @@
-<aside class="w-64 bg-slate-900 text-white min-h-screen shadow-lg">
+<aside class="w-64 bg-slate-900 text-grey min-h-screen shadow-lg">
 
     <div class="p-6 border-b border-slate-700">
 

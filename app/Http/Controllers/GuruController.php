@@ -6,6 +6,7 @@ use App\Models\Guru;
 use Illuminate\Http\Request;
 use App\Imports\GuruImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\GuruTemplateExport;
 
 class GuruController extends Controller
 {
@@ -124,4 +125,12 @@ class GuruController extends Controller
                 ->route('guru.index')
                 ->with('success', 'Data guru berhasil dihapus.');
         }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(
+            new GuruTemplateExport(),
+            'Template_Guru.xlsx'
+        );
+    }
 }

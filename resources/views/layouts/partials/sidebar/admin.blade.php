@@ -18,7 +18,8 @@ ESPENERO
 
 <nav class="p-4">
 
-<a href="{{ route('dashboard') }}" class="block px-4 py-3 rounded hover:bg-slate-700">
+<a href="{{ route('dashboard') }}"
+class="block px-4 py-3 rounded text-white hover:bg-slate-700 hover:text-white transition">>
 
 📊 Dashboard
 
@@ -96,27 +97,10 @@ IMPORT DATA
 
 </div>
 
-<a href="#">
+<a href="{{ route('import.index') }}"
+class="block px-4 py-2 hover:bg-slate-700 rounded">
 
-📥 Import Guru
-
-</a>
-
-<a href="#">
-
-📥 Import Siswa
-
-</a>
-
-<a href="#">
-
-📥 Import User
-
-</a>
-
-<a href="#">
-
-📥 Import Jadwal
+📦 Import Data
 
 </a>
 

@@ -10,7 +10,7 @@
         <div class="max-w-7xl mx-auto px-4">
 
             {{-- HEADER --}}
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg text-white p-6 mb-6">
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg text-grey p-6 mb-6">
 
                 <h1 class="text-3xl font-bold">
                     Selamat Datang,

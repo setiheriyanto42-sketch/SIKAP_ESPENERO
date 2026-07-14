@@ -31,4 +31,9 @@ class JadwalMengajar extends Model
     {
         return $query->where('aktif', true);
     }
+
+    public function sesiMengajars()
+    {
+        return $this->hasMany(SesiMengajar::class);
+    }
 }
