@@ -2,7 +2,7 @@
 
 <x-slot name="header">
     <h2 class="text-2xl font-bold">
-        📦 Import Data Guru
+        📦 Import Data Siswa
     </h2>
 </x-slot>
 
@@ -33,12 +33,12 @@
 <div class="bg-white shadow rounded-xl p-6">
 
 <h3 class="text-xl font-bold mb-5">
-Upload File Excel Guru
+Upload File Excel Siswa
 </h3>
 
 <form
 id="importForm"
-action="{{ route('guru.import') }}"
+action="{{ route('siswa.import') }}"
 method="POST"
 enctype="multipart/form-data">
 
@@ -104,7 +104,7 @@ class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
 </button>
 
 <a
-href="{{ route('guru.index') }}"
+href="{{ route('siswa.index') }}"
 class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg">
 
 Kembali
@@ -137,11 +137,12 @@ class="mt-8">
 
 <table class="w-full text-sm">
 
-<tr><td>NIP</td></tr>
+<tr><td>NIS</td></tr>
+<tr><td>NISN</td></tr>
 <tr><td>Nama</td></tr>
 <tr><td>Jenis Kelamin</td></tr>
+<tr><td>Kelas</td></tr>
 <tr><td>No HP</td></tr>
-<tr><td>Email</td></tr>
 <tr><td>Alamat</td></tr>
 
 </table>
@@ -149,7 +150,7 @@ class="mt-8">
 <hr class="my-4">
 
 <a
-href="{{ route('guru.template') }}"
+href="{{ route('siswa.template') }}"
 class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-lg">
 
 ⬇ Download Template Excel
@@ -192,7 +193,7 @@ formData.append('_token','{{ csrf_token() }}');
 
 try{
 
-let response=await fetch("{{ route('guru.preview') }}",{
+let response=await fetch("{{ route('siswa.preview') }}",{
 
 method:'POST',
 
@@ -220,7 +221,7 @@ let html=`
 
 <h3 class="text-xl font-bold">
 
-📋 Preview Data Guru
+📋 Preview Data Siswa
 
 </h3>
 
@@ -243,15 +244,17 @@ ${data.length} Data
 
 <th class="border p-2 w-52">No</th>
 
-<th class="border p-2">NIP</th>
+<th class="border p-2">NIS</th>
+
+<th class="border p-2">NISN</th>
 
 <th class="border p-2">Nama</th>
 
 <th class="border p-2">JK</th>
 
-<th class="border p-2">HP</th>
+<th class="border p-2">Kelas</th>
 
-<th class="border p-2">Email</th>
+<th class="border p-2">No HP</th>
 
 <th class="border p-2">Alamat</th>
 
@@ -265,27 +268,25 @@ ${data.length} Data
 
 data.forEach(function(row,index){
 
-html+=`
+html += `
 
 <tr>
 
-<td class="border p-2">${index+1}</td>
+<td class="border p-2 text-center">${index+1}</td>
 
-<td class="border p-2">${row.nip??''}</td>
+<td class="border p-2">${row[0] ?? ''}</td>
 
-<td class="border p-2">${row.nama??''}</td>
+<td class="border p-2">${row[1] ?? ''}</td>
 
-<td class="border p-2">${row.jk??''}</td>
+<td class="border p-2">${row[2] ?? ''}</td>
 
-<td class="border p-2">${row.hp??''}</td>
+<td class="border p-2">${row[3] ?? ''}</td>
 
-<td class="border p-2 break-all">
-${row.email??''}
-</td>
+<td class="border p-2">${row[4] ?? ''}</td>
 
-<td class="border p-2 truncate">
-${row.alamat??''}
-</td>
+<td class="border p-2">${row[5] ?? ''}</td>
+
+<td class="border p-2">${row[6] ?? ''}</td>
 
 </tr>
 

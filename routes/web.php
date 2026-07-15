@@ -18,6 +18,7 @@ use App\Http\Controllers\JurnalMengajarController;
 use App\Http\Controllers\SesiMengajarController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\PreviewImportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -54,8 +55,32 @@ Route::middleware('auth')->group(function () {
     Route::post('/guru/import', [GuruController::class, 'import'])
         ->name('guru.import');
 
+    Route::post(
+        '/guru/preview',
+        [PreviewImportController::class,'guru']
+    )->name('guru.preview');
+
     Route::get('/guru/template', [GuruController::class, 'downloadTemplate'])
         ->name('guru.template');
+
+    /*
+    |--------------------------------------------------------------------------
+    | IMPORT SISWA
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/siswa/import', [SiswaController::class,'importForm'])
+        ->name('siswa.import.form');
+
+    Route::post('/siswa/import', [SiswaController::class,'import'])
+        ->name('siswa.import');
+
+    Route::post('/siswa/preview', [PreviewImportController::class,'siswa'])
+        ->name('siswa.preview');
+
+    Route::get('/siswa/template', [SiswaController::class,'downloadTemplate'])
+        ->name('siswa.template');
+
 
     /*
     |--------------------------------------------------------------------------
