@@ -1,3 +1,23 @@
+<script>
+
+document
+.getElementById('foto')
+.addEventListener('change',function(e){
+
+const file=e.target.files[0];
+
+if(file){
+
+document
+.getElementById('previewFoto')
+.src=URL.createObjectURL(file);
+
+}
+
+});
+
+</script>
+
 <x-app-layout>
 
     <x-slot name="header">
@@ -11,7 +31,10 @@
 
             <div class="bg-white shadow rounded-lg p-6">
 
-                <form action="{{ route('siswa.store') }}" method="POST">
+                <form
+                action="{{ route('siswa.store') }}"
+                method="POST"
+                enctype="multipart/form-data">
 
                     @csrf
 
@@ -48,6 +71,43 @@
                             @error('nama')
                                 <div class="text-red-600 text-sm">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <div class="col-span-2">
+
+                        <label class="font-semibold">
+
+                        Foto Siswa
+
+                        </label>
+
+                        <div class="mt-2 flex items-center gap-6">
+
+                        <img
+                        id="previewFoto"
+                        src="https://placehold.co/120x150/e2e8f0/64748b?text=FOTO"
+                        class="w-28 h-36 rounded-lg border object-cover">
+
+                        <div>
+
+                        <input
+                        type="file"
+                        name="foto"
+                        id="foto"
+                        accept="image/*"
+                        class="block w-full border rounded p-2">
+
+                        <p class="text-sm text-gray-500 mt-2">
+
+                        Format JPG / PNG
+                        Maksimal 2 MB
+
+                        </p>
+
+                        </div>
+
+                        </div>
+
                         </div>
 
                         <div>

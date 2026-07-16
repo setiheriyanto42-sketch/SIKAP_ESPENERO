@@ -127,6 +127,15 @@
 
                                 <div class="flex gap-2">
 
+                                    <a
+                                        href="{{ route('guru.show',$guru) }}"
+                                        class="bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-2 rounded-lg shadow"
+                                        title="Detail">
+
+                                        👁
+
+                                    </a>
+
                                     <a href="{{ route('guru.edit',$guru->id) }}"
                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
 

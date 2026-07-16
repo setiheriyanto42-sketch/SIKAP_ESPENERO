@@ -19,6 +19,7 @@ class JadwalMengajar extends Model
         'aktif' => 'boolean',
     ];
 
+
     public function guruMengajar()
     {
         return $this->belongsTo(GuruMengajar::class);
@@ -35,5 +36,10 @@ class JadwalMengajar extends Model
     public function sesiMengajars()
     {
         return $this->hasMany(SesiMengajar::class);
+    }
+
+    public function kehadirans()
+    {
+        return $this->hasMany(Kehadiran::class);
     }
 }

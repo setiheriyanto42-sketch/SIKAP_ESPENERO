@@ -60,7 +60,7 @@ class GuruController extends Controller
      */
     public function show(Guru $guru)
     {
-        //
+        return view('guru.show', compact('guru'));
     }
 
     /**

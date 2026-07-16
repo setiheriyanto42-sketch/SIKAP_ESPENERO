@@ -50,6 +50,12 @@
                         <th class="p-3 text-left">Kelas</th>
 
                         <th class="p-3 text-center">Aksi</th>
+                        <th class="p-3 text-center">Jam Ke</th>
+                        <th class="p-3 text-center">
+
+                        Status
+
+                        </th>
 
                     </tr>
 
@@ -92,6 +98,34 @@
                         <td class="p-3">
 
                             {{ $item->guruMengajar->kelas->nama_kelas }}
+
+                        </td>
+
+                        <td class="p-3 text-center">
+
+                        {{ $item->jam_ke }}
+
+                        </td>
+
+                        <td class="p-3 text-center">
+
+                        @if($item->aktif)
+
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+
+                        Aktif
+
+                        </span>
+
+                        @else
+
+                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full">
+
+                        Non Aktif
+
+                        </span>
+
+                        @endif
 
                         </td>
 

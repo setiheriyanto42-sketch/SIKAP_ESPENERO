@@ -19,9 +19,10 @@ class GuruMengajarController extends Controller
         $mengajar = GuruMengajar::with([
             'guru',
             'kelas',
-            'mataPelajaran'
+            'mataPelajaran',
+            'tahunAjaran'
         ])
-        ->orderBy('guru_id')
+        ->latest()
         ->get();
 
         return view('guru_mengajar.index', compact('mengajar'));

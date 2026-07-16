@@ -31,7 +31,9 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             // Tahun ajaran
-            $table->string('tahun_ajaran',20);
+            $table->foreignId('tahun_ajaran_id')
+                ->constrained('tahun_ajarans')
+                ->cascadeOnDelete();
 
             // Semester
             $table->enum('semester',[
