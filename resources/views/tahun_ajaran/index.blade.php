@@ -20,6 +20,40 @@ Master Tahun Ajaran
 
 @endif
 
+@php
+$aktif = $tahun->firstWhere('aktif', true);
+@endphp
+
+@if($aktif)
+
+<div class="mb-6 rounded-xl bg-gradient-to-r from-green-600 to-green-500 text-white shadow-lg">
+
+    <div class="p-6">
+
+        <div class="text-sm uppercase tracking-wider">
+
+            📚 Tahun Ajaran Aktif
+
+        </div>
+
+        <div class="text-3xl font-bold mt-2">
+
+            {{ $aktif->tahun_ajaran }}
+
+        </div>
+
+        <div class="text-lg">
+
+            Semester {{ $aktif->semester }}
+
+        </div>
+
+    </div>
+
+</div>
+
+@endif
+
 <div class="mb-5 flex justify-end">
 
 <a href="{{ route('tahun-ajaran.create') }}"
@@ -35,7 +69,7 @@ class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded">
 
 <table class="w-full">
 
-<thead class="bg-gray-100">
+<thead class="bg-sky-600 text-white">
 
 <tr>
 
@@ -92,6 +126,24 @@ AKTIF
 <span class="bg-red-200 px-3 py-1 rounded">
 
 NONAKTIF
+
+</span>
+
+@endif
+
+@if($item->aktif)
+
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 font-semibold">
+
+🟢 Aktif
+
+</span>
+
+@else
+
+<span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-600 font-semibold">
+
+⚪ Non Aktif
 
 </span>
 

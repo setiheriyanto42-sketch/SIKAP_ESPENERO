@@ -19,6 +19,8 @@ use App\Http\Controllers\SesiMengajarController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\PreviewImportController;
+use App\Http\Controllers\TemplateJamPelajaranController;
+use App\Http\Controllers\TemplateJadwalController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -134,6 +136,10 @@ Route::middleware('auth')->group(function () {
             'store',
         ]);
 
+    Route::resource('template-jam', TemplateJamPelajaranController::class);
+
+    Route::resource('template-jadwal', TemplateJadwalController::class);
+
     /*
     |--------------------------------------------------------------------------
     | MENGAJAR
@@ -181,6 +187,11 @@ Route::middleware('auth')->group(function () {
         'penilaian/{sesiMengajar}',
         [PenilaianController::class, 'store']
     )->name('penilaian.store');
+
+    Route::post(
+        'template-jadwal/{templateJadwal}/generate',
+        [TemplateJadwalController::class, 'generate']
+    )->name('template-jadwal.generate');
 
 });
 

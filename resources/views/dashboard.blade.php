@@ -1,10 +1,5 @@
-<x-app-layout>
-
-    <x-slot name="header">
-        <h2 class="font-bold text-2xl text-gray-800">
-            🎓 Dashboard SIKAP ESPENERO
-        </h2>
-    </x-slot>
+@extends('layouts.app')
+@section('content')
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto px-4">
@@ -21,23 +16,27 @@
                     Sistem Informasi Kehadiran dan Karakter
                 </p>
 
-                @if($data['tahunAktif'])
+                <div class="mt-4">
+                    <span class="inline-flex items-center gap-2 bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold shadow">
 
-                    <div class="mt-4">
+                        <span class="text-green-500 text-xl">🟢</span>
 
-                        <span class="bg-white text-blue-700 px-4 py-2 rounded-lg font-semibold">
+                        Tahun Pelajaran
+                        <strong>{{ $data['tahunAjaran'] }}</strong>
 
-                            Tahun Ajaran :
-                            {{ $data['tahunAktif']->tahun_ajaran }}
-                            |
-                            Semester
-                            {{ $data['tahunAktif']->semester }}
+                        |
 
+                        Semester
+                        <strong>{{ $data['semester'] }}</strong>
+
+                        |
+
+                        <span class="text-green-600 font-bold">
+                            {{ $data['statusTA'] }}
                         </span>
 
-                    </div>
-
-                @endif
+                    </span>
+                </div>
 
             </div>
 
@@ -46,50 +45,62 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-                    <div class="bg-blue-600 text-white rounded-xl shadow p-5">
+                    <!-- Tahun Pelajaran -->
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl shadow-lg p-5">
 
-                        <div>Guru</div>
+                        <div class="text-sm opacity-90">
+                            📚 Tahun Pelajaran Aktif
+                        </div>
 
-                        <div class="text-4xl font-bold mt-2">
+                        <div class="text-2xl font-bold mt-2">
+                            {{ $data['tahunAjaran'] }}
+                        </div>
 
+                        <div class="mt-2">
+                            Semester {{ $data['semester'] }}
+                        </div>
+
+                        <div class="mt-3 text-green-200 font-semibold">
+                            🟢 {{ $data['statusTA'] }}
+                        </div>
+
+                    </div>
+
+                    <!-- Guru -->
+                    <div class="bg-blue-600 text-white rounded-xl shadow-lg p-5">
+
+                        <div class="text-sm">
+                            👨‍🏫 Guru
+                        </div>
+
+                        <div class="text-4xl font-bold mt-3">
                             {{ $data['jumlahGuru'] }}
-
                         </div>
 
                     </div>
 
-                    <div class="bg-green-600 text-white rounded-xl shadow p-5">
+                    <!-- Siswa -->
+                    <div class="bg-green-600 text-white rounded-xl shadow-lg p-5">
 
-                        <div>Siswa</div>
+                        <div class="text-sm">
+                            👨‍🎓 Siswa
+                        </div>
 
-                        <div class="text-4xl font-bold mt-2">
-
+                        <div class="text-4xl font-bold mt-3">
                             {{ $data['jumlahSiswa'] }}
-
                         </div>
 
                     </div>
 
-                    <div class="bg-yellow-500 text-white rounded-xl shadow p-5">
+                    <!-- Kelas -->
+                    <div class="bg-yellow-500 text-white rounded-xl shadow-lg p-5">
 
-                        <div>Kelas</div>
+                        <div class="text-sm">
+                            🏫 Kelas
+                        </div>
 
-                        <div class="text-4xl font-bold mt-2">
-
+                        <div class="text-4xl font-bold mt-3">
                             {{ $data['jumlahKelas'] }}
-
-                        </div>
-
-                    </div>
-
-                    <div class="bg-red-600 text-white rounded-xl shadow p-5">
-
-                        <div>Mata Pelajaran</div>
-
-                        <div class="text-4xl font-bold mt-2">
-
-                            {{ $data['jumlahMapel'] }}
-
                         </div>
 
                     </div>
@@ -291,4 +302,4 @@
         </div>
     </div>
 
-</x-app-layout>
+@endsection

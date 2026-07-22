@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class GuruMengajar extends Model
 {
+
     protected $fillable = [
-        'tahun_ajaran_id',
         'guru_id',
-        'mata_pelajaran_id',
         'kelas_id',
+        'mata_pelajaran_id',
         'aktif',
     ];
 
@@ -21,10 +21,7 @@ class GuruMengajar extends Model
     /**
      * Relasi Tahun Ajaran
      */
-    public function tahunAjaran()
-    {
-        return $this->belongsTo(TahunAjaran::class);
-    }
+    
 
     /**
      * Relasi Guru

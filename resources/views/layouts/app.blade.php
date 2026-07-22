@@ -9,7 +9,7 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>SIKAP ESPENERO</title>
+    <title>SIKAP SMPN 2 JATIROTO</title>
 
     @vite(['resources/css/app.css','resources/js/app.js'])
 
@@ -30,17 +30,7 @@
         {{-- CONTENT --}}
         <main class="flex-1 p-6">
 
-            @if(isset($header))
-
-                <div class="mb-6">
-
-                    {{ $header }}
-
-                </div>
-
-            @endif
-
-            {{ $slot }}
+            @yield('content')
 
         </main>
 

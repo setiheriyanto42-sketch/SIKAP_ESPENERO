@@ -18,14 +18,19 @@ class GuruImport implements ToModel, WithHeadingRow
             $jk = 'P';
         }
 
+        // Skip jika NIP sudah ada
+        if (Guru::where('nip', $row['nip'])->exists()) {
+            return null;
+        }
+
         return new Guru([
-            'nip' => $row['nip'],
-            'nama' => $row['nama'],
-            'jenis_kelamin' => $jk,
-            'no_hp' => $row['no_hp'],
-            'email' => $row['email'],
-            'alamat' => $row['alamat'],
-            'aktif' => true,
+            'nip'             => $row['nip'],
+            'nama'            => $row['nama'],
+            'jenis_kelamin'   => $jk,
+            'no_hp'           => $row['no_hp'],
+            'email'           => $row['email'],
+            'alamat'          => $row['alamat'],
+            'aktif'           => true,
         ]);
     }
 }

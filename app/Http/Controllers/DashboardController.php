@@ -7,11 +7,11 @@ use App\Models\Guru;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\MataPelajaran;
-use App\Models\TahunAjaran;
 use App\Models\JadwalMengajar;
 use App\Models\GuruMengajar;
 use App\Models\SesiMengajar;
 use Carbon\Carbon;
+use App\Helpers\SemesterHelper;
 
 class DashboardController extends Controller
 {
@@ -40,8 +40,10 @@ class DashboardController extends Controller
             'kelasDiampu' => 0,
             'jumlahSiswaDiampu' => 0,
 
-            // Tahun aktif
-            'tahunAktif' => TahunAjaran::where('aktif', true)->first(),
+            // Kalender Akademik Otomatis
+            'tahunAjaran' => SemesterHelper::tahunAjaran(),
+            'semester'    => SemesterHelper::semester(),
+            'statusTA'    => SemesterHelper::status(),
 
             // Wali kelas
             'isWaliKelas' => false,

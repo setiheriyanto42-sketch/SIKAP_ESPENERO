@@ -72,10 +72,13 @@ class SiswaController extends Controller
 
     public function show(Siswa $siswa)
     {
-        return view(
-            'siswa.show',
-            compact('siswa')
-        );
+        $siswa->load([
+            'kehadirans' => function ($query) {
+                $query->latest()->limit(10);
+            }
+        ]);
+
+        return view('siswa.show', compact('siswa'));
     }
 
     public function edit(Siswa $siswa)

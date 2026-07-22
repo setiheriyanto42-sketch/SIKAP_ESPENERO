@@ -9,27 +9,51 @@ class PreviewImportController extends Controller
 {
     public function guru(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls'
-        ]);
+        try {
 
-        return response()->json(
-            (new ExcelPreviewService())->preview(
-                $request->file('file')->getRealPath()
-            )
-        );
+            $request->validate([
+                'file' => 'required|mimes:xlsx,xls'
+            ]);
+
+            $data = (new ExcelPreviewService())
+                ->preview($request->file('file')->getRealPath());
+
+            return response()->json($data);
+
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => basename($e->getFile()),
+            ],500);
+
+        }
     }
 
     public function siswa(Request $request)
     {
-        $request->validate([
-            'file' => 'required|mimes:xlsx,xls'
-        ]);
+        try {
 
-        return response()->json(
-            (new ExcelPreviewService())->preview(
-                $request->file('file')->getRealPath()
-            )
-        );
+            $request->validate([
+                'file'=>'required|mimes:xlsx,xls'
+            ]);
+
+            $data=(new ExcelPreviewService())
+                ->preview($request->file('file')->getRealPath());
+
+            return response()->json($data);
+
+        } catch (\Throwable $e){
+
+            return response()->json([
+                'success'=>false,
+                'message'=>$e->getMessage(),
+                'line'=>$e->getLine(),
+                'file'=>basename($e->getFile()),
+            ],500);
+
+        }
     }
 }

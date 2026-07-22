@@ -30,21 +30,11 @@ return new class extends Migration
                 ->constrained('kelas')
                 ->cascadeOnDelete();
 
-            // Tahun ajaran
-            $table->foreignId('tahun_ajaran_id')
-                ->constrained('tahun_ajarans')
-                ->cascadeOnDelete();
-
-            // Semester
-            $table->enum('semester',[
-                'Ganjil',
-                'Genap'
-            ]);
-
             // Status aktif
             $table->boolean('aktif')->default(true);
 
             $table->timestamps();
+
         });
     }
 

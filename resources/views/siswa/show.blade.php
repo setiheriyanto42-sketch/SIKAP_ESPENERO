@@ -186,6 +186,74 @@ Informasi lengkap data siswa
 
     </div>
 
+    <div class="mt-10">
+
+        <h3 class="text-2xl font-bold text-sky-700 mb-4">
+
+            📊 Statistik Kehadiran
+
+        </h3>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+
+            <div class="bg-green-100 rounded-xl p-4 text-center shadow">
+                <div class="text-3xl font-bold text-green-700">
+                    {{ $siswa->totalHadir() }}
+                </div>
+                <div class="text-green-700">
+                    Hadir
+                </div>
+            </div>
+
+            <div class="bg-yellow-100 rounded-xl p-4 text-center shadow">
+                <div class="text-3xl font-bold text-yellow-700">
+                    {{ $siswa->totalIzin() }}
+                </div>
+                <div class="text-yellow-700">
+                    Izin
+                </div>
+            </div>
+
+            <div class="bg-blue-100 rounded-xl p-4 text-center shadow">
+                <div class="text-3xl font-bold text-blue-700">
+                    {{ $siswa->totalSakit() }}
+                </div>
+                <div class="text-blue-700">
+                    Sakit
+                </div>
+            </div>
+
+            <div class="bg-red-100 rounded-xl p-4 text-center shadow">
+                <div class="text-3xl font-bold text-red-700">
+                    {{ $siswa->totalAlfa() }}
+                </div>
+                <div class="text-red-700">
+                    Alfa
+                </div>
+            </div>
+
+            <div class="bg-orange-100 rounded-xl p-4 text-center shadow">
+                <div class="text-3xl font-bold text-orange-700">
+                    {{ $siswa->totalTerlambat() }}
+                </div>
+                <div class="text-orange-700">
+                    Terlambat
+                </div>
+            </div>
+
+            <div class="bg-gray-200 rounded-xl p-4 text-center shadow">
+                <div class="text-3xl font-bold text-gray-700">
+                    {{ $siswa->totalMembolos() }}
+                </div>
+                <div class="text-gray-700">
+                    Membolos
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
     <hr class="my-8">
 
     <div class="flex gap-3">

@@ -23,6 +23,8 @@ class TahunAjaranController extends Controller
 
     public function store(Request $request)
     {
+        dd('MASUK STORE');
+
         $request->validate([
             'tahun_ajaran' => 'required|max:20',
             'semester' => 'required',
@@ -30,7 +32,7 @@ class TahunAjaranController extends Controller
 
         if ($request->has('aktif')) {
             TahunAjaran::query()->update([
-                'aktif' => false
+                'aktif' => false,
             ]);
         }
 
@@ -42,8 +44,13 @@ class TahunAjaranController extends Controller
 
         return redirect()
             ->route('tahun-ajaran.index')
-            ->with('success','Tahun Ajaran berhasil ditambahkan.');
+            ->with(
+                'success',
+                '✅ Tahun Ajaran berhasil ditambahkan.'
+            );
     }
+
+
 
     public function show(TahunAjaran $tahunAjaran)
     {
@@ -75,8 +82,14 @@ class TahunAjaranController extends Controller
         ]);
 
         return redirect()
-            ->route('tahun-ajaran.index')
-            ->with('success','Data berhasil diperbarui.');
+        ->route('tahun-ajaran.index')
+        ->with(
+            'success',
+            '✅ Data Tahun Ajaran berhasil diperbarui'.
+            ($request->has('aktif')
+                ? ' dan sekarang menjadi Tahun Ajaran Aktif.'
+                : '.')
+        );
     }
 
     public function destroy(TahunAjaran $tahunAjaran)

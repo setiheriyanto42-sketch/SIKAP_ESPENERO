@@ -7,54 +7,42 @@ use App\Models\Kelas;
 use App\Models\MataPelajaran;
 use App\Models\GuruMengajar;
 use Illuminate\Http\Request;
-use App\Models\TahunAjaran;
 
 class GuruMengajarController extends Controller
 {
-    /**
-     * Daftar Penugasan Mengajar
-     */
     public function index()
     {
         $mengajar = GuruMengajar::with([
             'guru',
             'kelas',
-            'mataPelajaran',
-            'tahunAjaran'
-        ])
-        ->latest()
-        ->get();
+            'mataPelajaran'
+        ])->latest()->get();
 
         return view('guru_mengajar.index', compact('mengajar'));
     }
 
-    /**
-     * Form tambah penugasan
-     */
     public function create()
     {
-        $gurus = Guru::where('aktif',1)
-                    ->orderBy('nama')
-                    ->get();
+        $gurus = Guru::where('aktif', 1)
+            ->orderBy('nama')
+            ->get();
 
-        $kelas = Kelas::where('aktif',1)
-                    ->orderBy('tingkat')
-                    ->orderBy('rombel')
-                    ->get();
+        $kelas = Kelas::where('aktif', 1)
+            ->orderBy('tingkat')
+            ->orderBy('rombel')
+            ->get();
 
-        $mapel = MataPelajaran::where('aktif',1)
-                    ->orderBy('nama_mapel')
-                    ->get();
+        $mapel = MataPelajaran::where('aktif', 1)
+            ->orderBy('nama_mapel')
+            ->get();
 
-        return view(
-            'guru_mengajar.create',
-            compact('gurus','kelas','mapel')
-        );
+        return view('guru_mengajar.create', compact(
+            'gurus',
+            'kelas',
+            'mapel'
+        ));
     }
 
-    /**
-     * Simpan Penugasan
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -63,18 +51,11 @@ class GuruMengajarController extends Controller
             'mata_pelajaran_id' => 'required|exists:mata_pelajarans,id',
         ]);
 
-        $tahunAjaran = TahunAjaran::where('aktif', true)->first();
-
-        if (!$tahunAjaran) {
-            return back()->with('error', 'Belum ada Tahun Ajaran yang aktif.');
-        }
-
         GuruMengajar::create([
-            'tahun_ajaran_id'   => $tahunAjaran->id,
-            'guru_id'           => $request->guru_id,
-            'kelas_id'          => $request->kelas_id,
+            'guru_id' => $request->guru_id,
+            'kelas_id' => $request->kelas_id,
             'mata_pelajaran_id' => $request->mata_pelajaran_id,
-            'aktif'             => true,
+            'aktif' => true,
         ]);
 
         return redirect()

@@ -206,7 +206,13 @@ headers:{
 
 if(!response.ok){
 
-throw new Error("Preview gagal");
+    let err = await response.json();
+
+    alert(err.message);
+
+    console.log(err);
+
+    return;
 
 }
 
@@ -271,20 +277,20 @@ html+=`
 
 <td class="border p-2">${index+1}</td>
 
-<td class="border p-2">${row.nip??''}</td>
+<td class="border p-2">${row[0]??''}</td>
 
-<td class="border p-2">${row.nama??''}</td>
+<td class="border p-2">${row[1]??''}</td>
 
-<td class="border p-2">${row.jk??''}</td>
+<td class="border p-2">${row[2]??''}</td>
 
-<td class="border p-2">${row.hp??''}</td>
+<td class="border p-2">${row[3]??''}</td>
 
 <td class="border p-2 break-all">
-${row.email??''}
+${row[4]??''}
 </td>
 
 <td class="border p-2 truncate">
-${row.alamat??''}
+${row[5]??''}
 </td>
 
 </tr>
