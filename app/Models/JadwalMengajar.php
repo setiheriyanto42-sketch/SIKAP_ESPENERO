@@ -19,18 +19,9 @@ class JadwalMengajar extends Model
         'aktif' => 'boolean',
     ];
 
-
     public function guruMengajar()
     {
         return $this->belongsTo(GuruMengajar::class);
-    }
-
-    /**
-     * Scope jadwal aktif
-     */
-    public function scopeAktif($query)
-    {
-        return $query->where('aktif', true);
     }
 
     public function sesiMengajars()
@@ -41,5 +32,10 @@ class JadwalMengajar extends Model
     public function kehadirans()
     {
         return $this->hasMany(Kehadiran::class);
+    }
+
+    public function scopeAktif($query)
+    {
+        return $query->where('aktif', true);
     }
 }

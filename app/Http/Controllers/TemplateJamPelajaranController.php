@@ -76,4 +76,29 @@ class TemplateJamPelajaranController extends Controller
 
         return back()->with('success', 'Data berhasil dihapus.');
     }
+
+    public function generateKelas(PerencanaanPembelajaran $modulAjar)
+    {
+        $kelas = Kelas::where(
+            'tingkat',
+            $modulAjar->tingkat
+        )->get();
+
+        foreach ($kelas as $k) {
+
+            PerencanaanKelas::firstOrCreate([
+
+                'perencanaan_pembelajaran_id' => $modulAjar->id,
+
+                'kelas_id' => $k->id,
+
+            ]);
+
+        }
+
+        return back()->with(
+            'success',
+            'Semua kelas berhasil dibuat.'
+        );
+    }
 }

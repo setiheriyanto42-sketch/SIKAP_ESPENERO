@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
 <x-slot name="header">
 
@@ -16,4 +18,4 @@ Fitur daftar jurnal akan kita lanjutkan setelah alur guru selesai.
 
 </div>
 
-</x-app-layout>
+@endsection

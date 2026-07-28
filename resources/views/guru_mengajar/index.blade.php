@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
     <x-slot name="header">
         <h2 class="text-2xl font-bold">
@@ -20,71 +22,112 @@
 
             @endif
 
-            <div class="flex justify-end mb-5">
+            <div class="flex justify-end gap-3 mb-5">
 
                 <a href="{{ route('guru-mengajar.create') }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded">
+                class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow">
 
-                    + Tambah Penugasan
+                    ➕ Tambah Penugasan
 
                 </a>
 
+                <form method="POST"
+                    action="{{ route('guru-mengajar.generate-semua') }}">
+
+                    @csrf
+
+                    <button
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg shadow">
+
+                        ⚙ Generate Semua
+
+                    </button>
+
+                </form>
+
             </div>
 
-            <div class="bg-white shadow rounded">
+            <div class="overflow-x-auto rounded-xl shadow-lg border">
 
-                <table class="w-full">
+                <table class="min-w-full border border-gray-200">
 
-                    <thead class="bg-gray-100">
+                <thead class="bg-slate-800 text-white">
 
                     <tr>
 
-                        <th class="p-3">No</th>
-                        <th>Guru</th>
-                        <th>Mata Pelajaran</th>
-                        <th>Kelas</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th class="border px-4 py-3 w-16 text-center">
+                            No
+                        </th>
+
+                        <th class="border px-4 py-3">
+                            Guru
+                        </th>
+
+                        <th class="border px-4 py-3">
+                            Mata Pelajaran
+                        </th>
+
+                        <th class="border px-4 py-3 text-center w-24">
+                            Kelas
+                        </th>
+
+                        <th class="border px-4 py-3 text-center w-20">
+                            JP
+                        </th>
+
+                        <th class="border px-4 py-3 text-center w-28">
+                            Status
+                        </th>
+
+                        <th class="border px-4 py-3 text-center w-48">
+                            Aksi
+                        </th>
 
                     </tr>
 
-                    </thead>
+                </thead>
 
-                    <tbody>
+                <tbody>
 
                     @forelse($mengajar as $item)
 
-                        <tr class="border-t">
+                        <tr class="hover:bg-blue-50">
 
-                            <td class="p-3">
+                            <td class="border px-4 py-3 text-center">
 
                                 {{ $loop->iteration }}
 
                             </td>
 
-                            <td>
+                            <td class="border px-4 py-3">
 
                                 {{ $item->guru->nama }}
 
                             </td>
 
-                            <td>
+                            <td class="border px-4 py-3">
 
                                 {{ $item->mataPelajaran->nama_mapel }}
 
                             </td>
 
-                            <td>
+                            <td class="border px-4 py-3 text-center">
 
                                 {{ $item->kelas->nama_kelas }}
 
                             </td>
 
-                            <td>
+                            <td class="border px-4 py-3 text-center font-semibold">
+
+                                {{ $item->jumlah_jam }}
+
+                            </td>
+
+                            <td class="border px-4 py-3 text-center">
 
                                 @if($item->aktif)
 
-                                    <span class="bg-green-200 px-2 rounded">
+                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
 
                                         Aktif
 
@@ -92,7 +135,7 @@
 
                                 @else
 
-                                    <span class="bg-red-200 px-2 rounded">
+                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full">
 
                                         Nonaktif
 
@@ -102,23 +145,34 @@
 
                             </td>
 
-                            <td>
+                            <td class="border px-4 py-3 text-center">
 
-                                <form method="POST"
-                                      action="{{ route('guru-mengajar.destroy',$item) }}">
+                                <div class="flex justify-center gap-2">
 
-                                    @csrf
-                                    @method('DELETE')
+                                    <a href="#"
+                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
 
-                                    <button
-                                        onclick="return confirm('Hapus penugasan?')"
-                                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+                                        Edit
 
-                                        Hapus
+                                    </a>
 
-                                    </button>
+                                    <form method="POST"
+                                        action="{{ route('guru-mengajar.destroy',$item) }}">
 
-                                </form>
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                            onclick="return confirm('Hapus data?')"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded">
+
+                                            Hapus
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
 
                             </td>
 
@@ -149,4 +203,4 @@
 
     </div>
 
-</x-app-layout>
+@endsection

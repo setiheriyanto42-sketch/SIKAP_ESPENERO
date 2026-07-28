@@ -1,124 +1,159 @@
-<x-app-layout>
+@extends('layouts.app')
 
-<x-slot name="header">
-
-<h2 class="text-2xl font-bold">
-
-Tambah Penugasan Mengajar
-
-</h2>
-
-</x-slot>
+@section('content')
 
 <div class="py-6">
 
-<div class="max-w-3xl mx-auto">
+    <div class="max-w-3xl mx-auto">
 
-<div class="bg-white shadow rounded-lg p-6">
+        <div class="bg-white rounded-xl shadow-lg p-6">
 
-<form method="POST"
-      action="{{ route('guru-mengajar.store') }}">
+            <h2 class="text-2xl font-bold mb-6">
 
-@csrf
+                ➕ Tambah Penugasan Mengajar
 
-<div class="mb-4">
+            </h2>
 
-<label class="block font-semibold mb-2">
+            <form method="POST"
+                  action="{{ route('guru-mengajar.store') }}">
 
-Guru
+                @csrf
 
-</label>
+                {{-- Guru --}}
+                <div class="mb-5">
 
-<select
-name="guru_id"
-class="border rounded w-full p-2">
+                    <label class="block font-semibold mb-2">
 
-@foreach($gurus as $guru)
+                        Guru
 
-<option value="{{ $guru->id }}">
+                    </label>
 
-{{ $guru->nama }}
+                    <select
+                        name="guru_id"
+                        class="border rounded-lg w-full p-2">
 
-</option>
+                        @foreach($gurus as $guru)
 
-@endforeach
+                            <option value="{{ $guru->id }}">
 
-</select>
+                                {{ $guru->nama }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                {{-- Mata Pelajaran --}}
+                <div class="mb-5">
+
+                    <label class="block font-semibold mb-2">
+
+                        Mata Pelajaran
+
+                    </label>
+
+                    <select
+                        name="mata_pelajaran_id"
+                        class="border rounded-lg w-full p-2">
+
+                        @foreach($mapel as $m)
+
+                            <option value="{{ $m->id }}">
+
+                                {{ $m->nama_mapel }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                {{-- Jumlah JP --}}
+                <div class="mb-5">
+
+                    <label class="block font-semibold mb-2">
+
+                        Jumlah JP per Minggu
+
+                    </label>
+
+                    <input
+                        type="number"
+                        name="jumlah_jam"
+                        min="1"
+                        max="20"
+                        value="1"
+                        class="border rounded-lg w-full p-2"
+                        required>
+
+                    <small class="text-gray-500">
+
+                        Contoh:
+                        Bahasa Indonesia 5 JP,
+                        Matematika 5 JP,
+                        Informatika 2 JP.
+
+                    </small>
+
+                </div>
+
+                {{-- Kelas --}}
+                <div class="mb-5">
+
+                    <label class="block font-semibold mb-2">
+
+                        Kelas
+
+                    </label>
+
+                    <select
+                        name="kelas_id"
+                        class="border rounded-lg w-full p-2">
+
+                        @foreach($kelas as $k)
+
+                            <option value="{{ $k->id }}">
+
+                                {{ $k->nama_kelas }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                <div class="flex gap-3">
+
+                    <button
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
+
+                        💾 Simpan
+
+                    </button>
+
+                    <a
+                        href="{{ route('guru-mengajar.index') }}"
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">
+
+                        Kembali
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
 
 </div>
 
-<div class="mb-4">
-
-<label class="block font-semibold mb-2">
-
-Mata Pelajaran
-
-</label>
-
-<select
-name="mata_pelajaran_id"
-class="border rounded w-full p-2">
-
-@foreach($mapel as $m)
-
-<option value="{{ $m->id }}">
-
-{{ $m->nama_mapel }}
-
-</option>
-
-@endforeach
-
-</select>
-
-</div>
-
-<div class="mb-4">
-
-<label class="block font-semibold mb-2">
-
-Kelas
-
-</label>
-
-<select
-name="kelas_id"
-class="border rounded w-full p-2">
-
-@foreach($kelas as $k)
-
-<option value="{{ $k->id }}">
-
-{{ $k->nama_kelas }}
-
-</option>
-
-@endforeach
-
-</select>
-
-</div>
-
-<button
-class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">
-
-💾 Simpan
-
-</button>
-
-<a href="{{ route('guru-mengajar.index') }}"
-class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded">
-
-Kembali
-
-</a>
-
-</form>
-
-</div>
-
-</div>
-
-</div>
-
-</x-app-layout>
+@endsection

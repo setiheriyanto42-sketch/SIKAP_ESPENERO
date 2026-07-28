@@ -21,6 +21,9 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\PreviewImportController;
 use App\Http\Controllers\TemplateJamPelajaranController;
 use App\Http\Controllers\TemplateJadwalController;
+use App\Http\Controllers\PerencanaanPembelajaranController;
+use App\Http\Controllers\PerencanaanBabController;
+use App\Http\Controllers\PerencanaanPertemuanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -106,7 +109,10 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('siswa', SiswaController::class);
 
-    Route::resource('kelas', KelasController::class);
+    Route::resource('kelas', KelasController::class)
+    ->parameters([
+        'kelas' => 'kelas',
+    ]);
 
     Route::resource('mata-pelajaran', MataPelajaranController::class)
         ->parameters([
@@ -118,10 +124,25 @@ Route::middleware('auth')->group(function () {
             'tahun-ajaran' => 'tahunAjaran',
         ]);
 
+    Route::get(
+        'guru-mengajar/generate',
+        [GuruMengajarController::class, 'generate']
+    )->name('guru-mengajar.generate');
+
+    Route::post(
+        '/guru-mengajar/generate-semua',
+        [GuruMengajarController::class, 'generateSemua']
+    )->name('guru-mengajar.generate-semua');
+
     Route::resource('guru-mengajar', GuruMengajarController::class)
         ->parameters([
             'guru-mengajar' => 'guruMengajar',
         ]);
+
+    Route::get(
+        'guru-mengajar/generate',
+        [GuruMengajarController::class,'generate']
+    )->name('guru-mengajar.generate');
 
     Route::resource('jadwal-mengajar', JadwalMengajarController::class)
         ->parameters([
@@ -136,9 +157,91 @@ Route::middleware('auth')->group(function () {
             'store',
         ]);
 
+    Route::post(
+        'template-jadwal/{templateJadwal}/generate',
+        [TemplateJadwalController::class, 'generate']
+    )->name('template-jadwal.generate');
+
     Route::resource('template-jam', TemplateJamPelajaranController::class);
 
     Route::resource('template-jadwal', TemplateJadwalController::class);
+
+    Route::resource(
+        'modul-ajar',
+        PerencanaanPembelajaranController::class
+    )->parameters([
+        'modul-ajar' => 'modulAjar'
+    ]);
+
+    Route::post(
+        'modul-ajar/{modulAjar}/generate-kelas',
+        [PerencanaanPembelajaranController::class,'generateKelas']
+    )->name('modul-ajar.generate-kelas');
+
+    Route::resource(
+        'modul-bab',
+        PerencanaanBabController::class
+    );
+
+    Route::resource(
+        'pertemuan',
+        PerencanaanPertemuanController::class
+    );
+
+    Route::post(
+        'modul-ajar/{modulAjar}/generate-kelas',
+        [PerencanaanPembelajaranController::class, 'generateKelas']
+    )->name('modul-ajar.generate-kelas');
+
+    Route::get(
+        '/modul-bab/create',
+        [PerencanaanBabController::class,'create']
+    )->name('modul-bab.create');
+
+    Route::post(
+        '/modul-bab/store',
+        [PerencanaanBabController::class,'store']
+    )->name('modul-bab.store');
+
+    Route::resource(
+        'modul-pertemuan',
+        PerencanaanPertemuanController::class
+    );
+
+    Route::post(
+    '/bab/{bab}/generate-pertemuan',
+    [PerencanaanPertemuanController::class,'generate']
+    )->name('bab.generate-pertemuan');
+
+    Route::get(
+        '/pertemuan/{pertemuan}',
+        [PerencanaanPertemuanController::class,'show']
+    )->name('pertemuan.show');
+
+    Route::get(
+        '/modul-bab/{bab}/edit',
+        [PerencanaanBabController::class,'edit']
+    )->name('modul-bab.edit');
+
+    Route::put(
+        '/modul-bab/{bab}',
+        [PerencanaanBabController::class,'update']
+    )->name('modul-bab.update');
+
+    Route::delete(
+        '/modul-bab/{bab}',
+        [PerencanaanBabController::class,'destroy']
+    )->name('modul-bab.destroy');
+
+    Route::get(
+        '/pertemuan/{pertemuan}',
+        [PerencanaanPertemuanController::class,'show']
+    )->name('pertemuan.show');
+
+    Route::put(
+        '/pertemuan/{pertemuan}',
+        [PerencanaanPertemuanController::class,'update']
+    )->name('pertemuan.update');
 
     /*
     |--------------------------------------------------------------------------
@@ -155,6 +258,27 @@ Route::middleware('auth')->group(function () {
         'mengajar/{jadwalMengajar}',
         [AbsensiMengajarController::class, 'store']
     )->name('mengajar.store');
+
+     /*
+    |--------------------------------------------------------------------------
+    | JADWAL MENGAJAR
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/jadwal-mengajar/guru',
+        [JadwalMengajarController::class, 'guru']
+    )->name('jadwal-mengajar.guru');
+
+    Route::get(
+        '/jadwal-mengajar/kelas',
+        [JadwalMengajarController::class, 'kelas']
+    )->name('jadwal-mengajar.kelas');
+
+    Route::get(
+        '/jadwal-mengajar/mingguan',
+        [JadwalMengajarController::class, 'mingguan']
+    )->name('jadwal-mengajar.mingguan');
 
     /*
     |--------------------------------------------------------------------------

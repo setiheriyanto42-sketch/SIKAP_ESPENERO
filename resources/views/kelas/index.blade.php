@@ -1,17 +1,25 @@
-<x-app-layout>
+@extends('layouts.app')
 
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-bold text-gray-800">
-                Master Data Kelas
-            </h2>
+@section('content')
 
-            <a href="{{ route('kelas.create') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                + Tambah Kelas
-            </a>
-        </div>
-    </x-slot>
+    
+
+<div class="container">
+
+    <div class="flex justify-between items-center mb-6">
+
+        <h2 class="text-2xl font-bold text-gray-800">
+            Master Data Kelas
+        </h2>
+
+        <a href="{{ route('kelas.create') }}"
+           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+
+            + Tambah Kelas
+
+        </a>
+
+    </div>
 
     <div class="py-6">
 
@@ -150,4 +158,6 @@
 
     </div>
 
-</x-app-layout>
+</div>
+
+@endsection

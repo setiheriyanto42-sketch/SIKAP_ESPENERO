@@ -11,6 +11,7 @@ class GuruMengajar extends Model
         'guru_id',
         'kelas_id',
         'mata_pelajaran_id',
+        'jumlah_jam',
         'aktif',
     ];
 

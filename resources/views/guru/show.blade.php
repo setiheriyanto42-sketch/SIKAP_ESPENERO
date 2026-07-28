@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
 <x-slot name="header">
     <h2 class="text-2xl font-bold">
@@ -141,4 +143,4 @@ class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg">
 
 </div>
 
-</x-app-layout>
+@endsection

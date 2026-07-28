@@ -56,7 +56,7 @@ class TemplateJadwalController extends Controller
         )->delete();
 
         $jam = Carbon::createFromFormat(
-            'H:i',
+            'H:i:s',
             $templateJadwal->jam_masuk
         );
 
@@ -98,7 +98,7 @@ class TemplateJadwalController extends Controller
                 'jam_selesai' => $jam->copy()
                     ->addMinutes($templateJadwal->durasi_jp)
                     ->format('H:i'),
-                'jenis' => 'jp_'.$i,
+                'jenis' => 'belajar',
                 'urutan' => $urutan++,
             ]);
 
@@ -146,6 +146,16 @@ class TemplateJadwalController extends Controller
         return back()->with(
             'success',
             'Template berhasil digenerate.'
+        );
+    }
+
+    public function show(TemplateJadwal $templateJadwal)
+    {
+        $templateJadwal->load('jamPelajaran');
+
+        return view(
+            'template_jadwal.show',
+            compact('templateJadwal')
         );
     }
 }

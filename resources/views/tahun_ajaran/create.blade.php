@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
 <x-slot name="header">
 
@@ -95,4 +97,4 @@ Kembali
 
 </div>
 
-</x-app-layout>
+@endsection

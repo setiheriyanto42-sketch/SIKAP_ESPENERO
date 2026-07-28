@@ -5,13 +5,13 @@
         <div>
 
             <h1 class="text-2xl font-bold">
-                SIKAP ESPENERO
+                SIKAP SMPN 2 JATIROTO
             </h1>
 
             <p class="text-sm">
                 Sistem Informasi Kehadiran dan Karakter
                 <br>
-                SMP Negeri 2 Jatiroto
+                SMP Negeri 2 Jatiroto By Cah POLOS
             </p>
 
         </div>

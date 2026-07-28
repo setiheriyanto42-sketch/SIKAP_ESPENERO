@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
 <x-slot name="header">
 <h2 class="text-2xl font-bold">
@@ -207,4 +209,4 @@ Belum ada data.
 
 </div>
 
-</x-app-layout>
+@endsection

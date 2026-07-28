@@ -2,17 +2,35 @@
 @section('content')
 
     <div class="py-6">
-        <div class="max-w-7xl mx-auto px-4">
+    <div class="w-full px-6">
 
             {{-- HEADER --}}
-            <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg text-grey p-6 mb-6">
+            <div class="relative overflow-hidden bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 rounded-2xl shadow-xl p-8 mb-8 text-white">
 
-                <h1 class="text-3xl font-bold">
+                <h1 class="text-4xl font-extrabold tracking-wide">
                     Selamat Datang,
                     {{ $user->guru->nama ?? $user->name }}
                 </h1>
 
-                <p class="mt-2">
+                <div class="mt-3 flex flex-wrap gap-3">
+
+                    <span class="bg-white/20 px-4 py-2 rounded-full">
+
+                        👨‍🏫
+                        {{ $user->guru->jabatan ?? 'Guru' }}
+
+                    </span>
+
+                    <span class="bg-white/20 px-4 py-2 rounded-full">
+
+                        📅
+                        {{ now()->translatedFormat('l, d F Y') }}
+
+                    </span>
+
+                </div>
+
+                <p class="mt-3 text-blue-100 text-lg">
                     Sistem Informasi Kehadiran dan Karakter
                 </p>
 
@@ -113,40 +131,68 @@
             {{-- DASHBOARD GURU --}}
             @if($user->guru)
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
 
-                    <div class="bg-blue-600 text-white rounded-xl shadow p-5">
+                    <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl shadow-lg text-white p-6">
 
-                        <div>Jam Mengajar</div>
+                        <div class="text-sm opacity-90">
+                            📚 Jadwal Mengajar
+                        </div>
 
-                        <div class="text-4xl font-bold mt-2">
-
+                        <div class="text-4xl font-bold mt-3">
                             {{ $data['jamMengajar'] }}
+                        </div>
 
+                        <div class="text-sm mt-2">
+                            JP Terjadwal
                         </div>
 
                     </div>
 
-                    <div class="bg-green-600 text-white rounded-xl shadow p-5">
+                    <div class="bg-gradient-to-r from-green-500 to-green-700 rounded-2xl shadow-lg text-white p-6">
 
-                        <div>Kelas Diampu</div>
+                        <div class="text-sm opacity-90">
+                            🏫 Kelas Diampu
+                        </div>
 
-                        <div class="text-4xl font-bold mt-2">
-
+                        <div class="text-4xl font-bold mt-3">
                             {{ $data['kelasDiampu'] }}
+                        </div>
 
+                        <div class="text-sm mt-2">
+                            Kelas Aktif
                         </div>
 
                     </div>
 
-                    <div class="bg-yellow-500 text-white rounded-xl shadow p-5">
+                    <div class="bg-gradient-to-r from-orange-500 to-orange-700 rounded-2xl shadow-lg text-white p-6">
 
-                        <div>Siswa Diampu</div>
+                        <div class="text-sm opacity-90">
+                            👨‍🎓 Siswa Diampu
+                        </div>
 
-                        <div class="text-4xl font-bold mt-2">
-
+                        <div class="text-4xl font-bold mt-3">
                             {{ $data['jumlahSiswaDiampu'] }}
+                        </div>
 
+                        <div class="text-sm mt-2">
+                            Total Siswa
+                        </div>
+
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-500 to-purple-700 rounded-2xl shadow-lg text-white p-6">
+
+                        <div class="text-sm opacity-90">
+                            📝 Jurnal Belum Diisi
+                        </div>
+
+                        <div class="text-4xl font-bold mt-3">
+                            {{ $jurnalBelum }}
+                        </div>
+
+                        <div class="text-sm mt-2">
+                            Hari Ini
                         </div>
 
                     </div>
@@ -191,107 +237,115 @@
 
                     @forelse($jadwalHariIni as $jadwal)
 
-                        <div class="border rounded-xl p-5 mb-4">
+                    <div class="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 mb-5">
 
-                            <div class="flex justify-between items-center">
+                        <div class="flex flex-col lg:flex-row justify-between lg:items-center gap-6">
+
+                            <div class="flex items-start gap-5">
+
+                                <div class="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center text-white text-3xl shadow-lg">
+                                    📚
+                                </div>
 
                                 <div>
 
-                                    <h3 class="text-xl font-bold">
-
+                                    <h3 class="text-2xl font-bold text-gray-800">
                                         {{ $jadwal->guruMengajar->mataPelajaran->nama_mapel }}
-
                                     </h3>
 
-                                    <p>
-
-                                        {{ $jadwal->guruMengajar->kelas->nama_kelas }}
-
+                                    <p class="text-gray-600 mt-1">
+                                        🏫 {{ $jadwal->guruMengajar->kelas->nama_kelas }}
                                     </p>
 
                                     <p class="text-gray-500">
-
-                                        {{ $jadwal->jam_mulai }}
-
+                                        🕒 {{ substr($jadwal->jam_mulai,0,5) }}
                                         -
-
-                                        {{ $jadwal->jam_selesai }}
-
+                                        {{ substr($jadwal->jam_selesai,0,5) }}
                                     </p>
 
                                 </div>
 
-                                <div class="text-right">
+                            </div>
 
-                                    @if($jadwal->status_sesi=='Belum')
+                            <div class="text-center lg:text-right">
 
-                                        <span class="inline-block bg-gray-200 text-gray-700 px-3 py-1 rounded-full mb-3">
+                                @if($jadwal->status_sesi=='Belum')
 
-                                            ⚪ BELUM DIMULAI
+                                    <span class="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 text-gray-700 font-semibold">
+                                        ⚪ Belum Dimulai
+                                    </span>
 
-                                        </span>
+                                    <div class="mt-4">
 
-                                        <br>
-
-                                        <a
-                                            href="{{ route('sesi.mulai',$jadwal) }}"
-                                            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg">
+                                        <a href="{{ route('sesi.mulai',$jadwal) }}"
+                                        class="inline-block bg-green-600 hover:bg-green-700 transition text-white px-6 py-3 rounded-xl shadow-lg">
 
                                             🚀 MULAI MENGAJAR
 
                                         </a>
 
-                                    @elseif($jadwal->status_sesi=='Sedang')
+                                    </div>
 
-                                        <span class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full mb-3">
+                                @elseif($jadwal->status_sesi=='Sedang')
 
-                                            🟡 SEDANG MENGAJAR
+                                    <span class="inline-flex items-center px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold">
+                                        🟡 Sedang Mengajar
+                                    </span>
 
-                                        </span>
+                                    <div class="mt-4">
 
-                                        <br>
-
-                                        <a
-                                            href="{{ route('mengajar.index',$jadwal) }}"
-                                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg">
+                                        <a href="{{ route('mengajar.index',$jadwal) }}"
+                                        class="inline-block bg-yellow-500 hover:bg-yellow-600 transition text-white px-6 py-3 rounded-xl shadow-lg">
 
                                             ▶ LANJUTKAN
 
                                         </a>
 
-                                    @elseif($jadwal->status_sesi=='Selesai')
+                                    </div>
 
-                                        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full mb-3">
+                                @elseif($jadwal->status_sesi=='Selesai')
 
-                                            ✅ SELESAI
+                                    <span class="inline-flex items-center px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold">
+                                        ✅ Selesai
+                                    </span>
 
-                                        </span>
-
-                                        <br>
+                                    <div class="mt-4">
 
                                         <button
-                                            class="bg-gray-400 text-white px-6 py-3 rounded-lg cursor-not-allowed"
+                                            class="bg-gray-400 text-white px-6 py-3 rounded-xl cursor-not-allowed"
                                             disabled>
 
                                             ✔ SUDAH SELESAI
 
                                         </button>
 
-                                    @endif
+                                    </div>
 
-                                </div>
+                                @endif
 
                             </div>
 
                         </div>
 
+                    </div>
+
                     @empty
 
-                        <div class="text-center text-gray-500">
+                    <div class="bg-white rounded-2xl shadow-lg p-12 text-center">
 
-                            Tidak ada jadwal mengajar hari ini.
-
+                        <div class="text-6xl mb-4">
+                            📅
                         </div>
+
+                        <h2 class="text-2xl font-bold text-gray-700">
+                            Tidak Ada Jadwal Mengajar Hari Ini
+                        </h2>
+
+                        <p class="text-gray-500 mt-3">
+                            Selamat menikmati waktu luang atau persiapkan materi untuk pertemuan berikutnya.
+                        </p>
+
+                    </div>
 
                     @endforelse
 

@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
 <script>
 
@@ -382,5 +384,5 @@ document
         </div>
     </div>
 
-</x-app-layout>
+@endsection
 

@@ -2,126 +2,269 @@
 
 @section('content')
 
-<div class="container">
+<div class="py-6">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>📅 Template Jadwal</h3>
+    <div class="max-w-7xl mx-auto">
 
-        <a href="{{ route('template-jadwal.create') }}"
-           class="btn btn-primary">
-            + Tambah Template
-        </a>
-    </div>
+        @if(session('success'))
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+            <div class="mb-5 rounded-lg bg-green-100 border border-green-300 text-green-700 p-4">
+
+                {{ session('success') }}
+
+            </div>
+
+        @endif
+
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+
+            <div class="flex justify-between items-center">
+
+                <div>
+
+                    <h1 class="text-3xl font-bold text-slate-800">
+
+                        📅 Template Jadwal
+
+                    </h1>
+
+                    <p class="text-gray-500 mt-2">
+
+                        Kelola Template Jam Pelajaran untuk proses Generate Jadwal.
+
+                    </p>
+
+                </div>
+
+                <a href="{{ route('template-jadwal.create') }}"
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow">
+
+                    ➕ Tambah Template
+
+                </a>
+
+            </div>
+
         </div>
-    @endif
 
-    <div class="card shadow-sm">
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
 
-        <div class="card-body">
+            <div class="overflow-x-auto">
 
-            <table class="table table-bordered table-hover align-middle">
+                <table class="min-w-full">
 
-                <thead class="table-dark">
+                    <thead class="bg-slate-800 text-white">
 
-                <tr>
+                        <tr>
 
-                    <th width="60">No</th>
-                    <th>Nama Template</th>
-                    <th>Durasi JP</th>
-                    <th>Jam Masuk</th>
-                    <th>Jumlah JP</th>
-                    <th>Status</th>
-                    <th width="180">Aksi</th>
+                            <th class="px-4 py-3 text-center w-16">
 
-                </tr>
+                                No
 
-                </thead>
+                            </th>
 
-                <tbody>
+                            <th class="px-4 py-3">
 
-                @forelse($templates as $item)
+                                Nama Template
 
-                    <tr>
+                            </th>
 
-                        <td>{{ $loop->iteration }}</td>
+                            <th class="px-4 py-3 text-center">
 
-                        <td>{{ $item->nama }}</td>
+                                Durasi
 
-                        <td>{{ $item->durasi_jp }} Menit</td>
+                            </th>
 
-                        <td>{{ $item->jam_masuk }}</td>
+                            <th class="px-4 py-3 text-center">
 
-                        <td>{{ $item->jumlah_jp }}</td>
+                                Jam Masuk
 
-                        <td>
+                            </th>
 
-                            @if($item->aktif)
+                            <th class="px-4 py-3 text-center">
 
-                                <span class="badge bg-success">
-                                    Aktif
-                                </span>
+                                Jumlah JP
 
-                            @else
+                            </th>
 
-                                <span class="badge bg-secondary">
-                                    Tidak Aktif
-                                </span>
+                            <th class="px-4 py-3 text-center">
 
-                            @endif
+                                Status
+
+                            </th>
+
+                            <th class="px-4 py-3 text-center">
+
+                                Aksi
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    @forelse($templates as $item)
+
+                        <tr class="border-b hover:bg-blue-50">
+
+                            <td class="px-4 py-4 text-center">
+
+                                {{ $loop->iteration }}
+
+                            </td>
+
+                            <td class="px-4 py-4 font-semibold">
+
+                                {{ $item->nama }}
+
+                            </td>
+
+                            <td class="px-4 py-4 text-center">
+
+                                {{ $item->durasi_jp }} Menit
+
+                            </td>
+
+                            <td class="px-4 py-4 text-center">
+
+                                {{ $item->jam_masuk }}
+
+                            </td>
+
+                            <td class="px-4 py-4 text-center">
+
+                                {{ $item->jumlah_jp }}
+
+                            </td>
+
+                            <td class="px-4 py-4 text-center">
+
+                                @if($item->aktif)
+
+                                    <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full">
+
+                                        Aktif
+
+                                    </span>
+
+                                @else
+
+                                    <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full">
+
+                                        Non Aktif
+
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+                            <td class="px-4 py-4">
+
+                            <div class="flex justify-center gap-2 flex-wrap">
+
+                                <a href="{{ route('template-jadwal.show',$item) }}"
+                                class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded">
+
+                                    👁 Detail
+
+                                </a>
+
+                                <form action="{{ route('template-jadwal.generate',$item) }}"
+                                    method="POST">
+
+                                    @csrf
+
+                                    <button
+                                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded">
+
+                                        ⚙ Generate
+
+                                    </button>
+
+                                </form>
+
+                                <a href="#"
+                                class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">
+
+                                    ✏ Edit
+
+                                </a>
+
+                                <a href="#"
+                                class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded">
+
+                                    🗑 Hapus
+
+                                </a>
+
+                            </div>
 
                         </td>
 
-                        <td>
+                        </tr>
 
-                            <a href="#" class="btn btn-warning btn-sm">
-                                Edit
-                            </a>
+                    @empty
 
-                            <a href="#" class="btn btn-danger btn-sm">
-                                Hapus
-                            </a>
+                        <tr>
 
-                            <form action="{{ route('template-jadwal.generate', $item) }}"
-                                method="POST"
-                                style="display:inline;">
+                            <td colspan="7"
+                                class="py-10 text-center text-gray-500">
 
-                                @csrf
+                                Belum ada Template Jadwal.
 
-                                <button type="submit"
-                                        class="btn btn-success btn-sm"
-                                        onclick="return confirm('Generate ulang jadwal ini? Semua JP lama akan dihapus.')">
+                            </td>
 
-                                    ⚙ Generate
+                        </tr>
 
-                                </button>
+                    @endforelse
 
-                            </form>
+                    </tbody>
 
-                        </td>
+                </table>
 
-                    </tr>
+            </div>
 
-                @empty
+        </div>
 
-                    <tr>
+        <div class="bg-white rounded-xl shadow-lg p-6 mt-6">
 
-                        <td colspan="7" class="text-center">
+            <div class="flex justify-between items-center">
 
-                            Belum ada Template Jadwal
+                <div>
 
-                        </td>
+                    <h3 class="text-xl font-bold text-slate-800">
 
-                    </tr>
+                        🚀 Generate Jadwal Sekolah
 
-                @endforelse
+                    </h3>
 
-                </tbody>
+                    <p class="text-gray-500 mt-2">
 
-            </table>
+                        Setelah Template dan Penugasan Guru selesai dibuat,
+                        sistem akan menyusun seluruh jadwal secara otomatis.
+
+                    </p>
+
+                </div>
+
+                <form action="{{ route('guru-mengajar.generate-semua') }}"
+                    method="POST">
+
+                    @csrf
+
+                    <button
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg shadow">
+
+                        ⚙ Generate Semua
+
+                    </button>
+
+                </form>
+
+            </div>
 
         </div>
 

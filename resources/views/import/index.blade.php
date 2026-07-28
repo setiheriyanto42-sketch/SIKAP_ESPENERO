@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
 
 <x-slot name="header">
 
@@ -210,4 +212,4 @@ Coming Soon
 
 </div>
 
-</x-app-layout>
+@endsection

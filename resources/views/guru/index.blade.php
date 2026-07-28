@@ -1,10 +1,8 @@
-<x-app-layout>
+@extends('layouts.app')
 
-    <x-slot name="header">
-        <h2 class="text-2xl font-bold text-gray-900">
-            Data Guru
-        </h2>
-    </x-slot>
+@section('content')
+
+<div class="container">
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -190,4 +188,6 @@
 
     </div>
 
-</x-app-layout>
+</div>
+
+@endsection

@@ -1,10 +1,18 @@
-<x-app-layout>
+@extends('layouts.app')
 
-<x-slot name="header">
-<h2 class="text-2xl font-bold">
-Tambah Jadwal Mengajar
-</h2>
-</x-slot>
+@section('content')
+
+<div class="container">
+
+    <div class="flex justify-between items-center mb-6">
+
+        <h2 class="text-2xl font-bold">
+            Jadwal Mengajar
+        </h2>
+
+        ...
+
+
 
 <div class="py-6">
 
@@ -75,27 +83,7 @@ class="border rounded w-full p-2">
 
 </div>
 
-<div>
 
-<label>Mulai</label>
-
-<input
-type="time"
-name="jam_mulai"
-class="border rounded w-full p-2">
-
-</div>
-
-<div>
-
-<label>Selesai</label>
-
-<input
-type="time"
-name="jam_selesai"
-class="border rounded w-full p-2">
-
-</div>
 
 </div>
 
@@ -125,4 +113,6 @@ Kembali
 
 </div>
 
-</x-app-layout>
+</div>
+
+@endsection
