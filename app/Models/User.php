@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     /*
     |--------------------------------------------------------------------------
-    | HELPER
+    | HELPER ROLE
     |--------------------------------------------------------------------------
     */
 
@@ -64,9 +64,28 @@ class User extends Authenticatable
         return optional($this->role)->nama_role === 'Petugas Absensi';
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | GURU MAPEL
+    |--------------------------------------------------------------------------
+    |
+    | Mendukung database lama maupun role baru:
+    |
+    | Guru
+    | Guru Mapel
+    |
+    */
+
     public function isGuruMapel()
     {
-        return optional($this->role)->nama_role === 'Guru Mapel';
+        return in_array(
+            optional($this->role)->nama_role,
+            [
+                'Guru',
+                'Guru Mapel',
+            ],
+            true
+        );
     }
 
     public function isBK()

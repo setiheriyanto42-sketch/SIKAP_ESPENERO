@@ -6,6 +6,7 @@
 
     <div class="bg-white rounded-xl shadow-lg p-6">
 
+        {{-- HEADER --}}
         <div class="flex justify-between items-center mb-6">
 
             <div>
@@ -21,7 +22,8 @@
             </div>
 
             <a href="{{ route('modul-ajar.index') }}"
-               class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-3 rounded-lg">
+               class="bg-gray-500 hover:bg-gray-600
+                      text-white px-5 py-3 rounded-lg">
 
                 ← Kembali
 
@@ -29,47 +31,129 @@
 
         </div>
 
+
+        {{-- ERROR VALIDASI --}}
+        @if($errors->any())
+
+            <div class="mb-6 bg-red-50 border border-red-200
+                        text-red-700 rounded-xl p-4">
+
+                <div class="font-bold mb-2">
+                    ⚠ Data belum dapat disimpan
+                </div>
+
+                <ul class="list-disc ml-5 text-sm space-y-1">
+
+                    @foreach($errors->all() as $error)
+
+                        <li>{{ $error }}</li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        @endif
+
+
+        {{-- FLASH ERROR --}}
+        @if(session('error'))
+
+            <div class="mb-6 bg-red-50 border border-red-200
+                        text-red-700 rounded-xl p-4">
+
+                ⚠ {{ session('error') }}
+
+            </div>
+
+        @endif
+
+
+        {{-- INFORMASI GURU --}}
+        @if(auth()->user()->guru_id)
+
+            <div class="mb-6 bg-blue-50 border border-blue-200
+                        rounded-xl p-4">
+
+                <div class="text-xs uppercase tracking-wide
+                            text-blue-500 font-semibold">
+
+                    Guru Penyusun
+
+                </div>
+
+                <div class="font-bold text-blue-900 mt-1">
+
+                    {{ auth()->user()->guru->nama ?? auth()->user()->name }}
+
+                </div>
+
+                <div class="text-sm text-blue-700 mt-1">
+
+                    Mata pelajaran dan tingkat yang tersedia
+                    disesuaikan dengan penugasan mengajar Anda.
+
+                </div>
+
+            </div>
+
+        @endif
+
+
         <form
             action="{{ route('modul-ajar.store') }}"
             method="POST">
 
             @csrf
 
-            @if(auth()->user()->guru_id==null)
 
-            <div class="mb-6">
+            {{-- ADMIN PILIH GURU --}}
+            @if(auth()->user()->guru_id == null)
 
-                <label class="font-semibold">
+                <div class="mb-6">
 
-                    Guru
+                    <label class="font-semibold text-slate-700">
 
-                </label>
+                        Guru
 
-                <select
-                    name="guru_id"
-                    class="w-full border rounded-lg p-3 mt-2">
+                    </label>
 
-                    @foreach($gurus as $guru)
+                    <select
+                        name="guru_id"
+                        class="w-full border rounded-lg p-3 mt-2"
+                        required>
 
-                        <option value="{{ $guru->id }}">
-
-                            {{ $guru->nama }}
-
+                        <option value="">
+                            -- Pilih Guru --
                         </option>
 
-                    @endforeach
+                        @foreach($gurus as $guru)
 
-                </select>
+                            <option
+                                value="{{ $guru->id }}"
+                                {{ old('guru_id') == $guru->id ? 'selected' : '' }}>
 
-            </div>
+                                {{ $guru->nama }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
 
             @endif
 
-            <div class="grid grid-cols-2 gap-6">
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+                {{-- MATA PELAJARAN --}}
                 <div>
 
-                    <label class="font-semibold">
+                    <label class="font-semibold text-slate-700">
 
                         Mata Pelajaran
 
@@ -89,7 +173,9 @@
 
                         @foreach($mapel as $m)
 
-                            <option value="{{ $m->id }}">
+                            <option
+                                value="{{ $m->id }}"
+                                {{ old('mata_pelajaran_id') == $m->id ? 'selected' : '' }}>
 
                                 {{ $m->nama_mapel }}
 
@@ -99,11 +185,25 @@
 
                     </select>
 
+
+                    @if(auth()->user()->guru_id && $mapel->isEmpty())
+
+                        <p class="text-sm text-red-600 mt-2">
+
+                            ⚠ Belum ada mata pelajaran yang
+                            ditugaskan kepada Anda.
+
+                        </p>
+
+                    @endif
+
                 </div>
 
+
+                {{-- TAHUN AJARAN --}}
                 <div>
 
-                    <label class="font-semibold">
+                    <label class="font-semibold text-slate-700">
 
                         Tahun Ajaran Aktif
 
@@ -112,14 +212,19 @@
                     <input
                         type="text"
                         readonly
-                        class="w-full border rounded-lg p-3 mt-2 bg-gray-100"
-                        value="{{ $tahun ? $tahun->tahun_ajaran.' - '.$tahun->semester : '-' }}">
+                        class="w-full border rounded-lg p-3 mt-2
+                               bg-gray-100 text-gray-700"
+                        value="{{ $tahun
+                            ? $tahun->tahun_ajaran.' - '.$tahun->semester
+                            : '-' }}">
 
                 </div>
 
+
+                {{-- TINGKAT --}}
                 <div>
 
-                    <label class="font-semibold">
+                    <label class="font-semibold text-slate-700">
 
                         Tingkat
 
@@ -128,48 +233,72 @@
                     <select
                         id="tingkat"
                         name="tingkat"
-                        class="w-full border rounded-lg p-3 mt-2">
+                        class="w-full border rounded-lg p-3 mt-2"
+                        required>
 
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
+                        <option value="">
+                            -- Pilih Tingkat --
+                        </option>
+
+                        @foreach($tingkats as $tingkat)
+
+                            <option
+                                value="{{ $tingkat }}"
+                                {{ old('tingkat') == $tingkat ? 'selected' : '' }}>
+
+                                Kelas {{ $tingkat }}
+
+                            </option>
+
+                        @endforeach
 
                     </select>
 
+
+                    @if(auth()->user()->guru_id && $tingkats->isEmpty())
+
+                        <p class="text-sm text-red-600 mt-2">
+
+                            ⚠ Belum ada kelas yang ditugaskan
+                            kepada Anda.
+
+                        </p>
+
+                    @endif
+
                 </div>
 
+
+                {{-- SEMESTER --}}
                 <div>
 
-                    <label class="font-semibold">
+                    <label class="font-semibold text-slate-700">
 
                         Semester
 
                     </label>
 
-                    <select
+                    <input
                         id="semester"
-                        name="semester"
-                        class="w-full border rounded-lg p-3 mt-2">
+                        type="text"
+                        readonly
+                        class="w-full border rounded-lg p-3 mt-2
+                               bg-gray-100 text-gray-700"
+                        value="{{ $tahun->semester ?? '-' }}">
 
-                        <option value="Ganjil">
+                    <p class="text-xs text-gray-500 mt-1">
 
-                            Ganjil
+                        Semester mengikuti Tahun Ajaran aktif.
 
-                        </option>
-
-                        <option value="Genap">
-
-                            Genap
-
-                        </option>
-
-                    </select>
+                    </p>
 
                 </div>
 
-                <div class="col-span-2">
 
-                    <label class="font-semibold">
+                {{-- JUDUL --}}
+                <div class="md:col-span-2">
+
+                    <label class="font-semibold text-slate-700">
 
                         Judul Modul
 
@@ -179,13 +308,26 @@
                         id="judul"
                         type="text"
                         name="judul"
-                        class="w-full border rounded-lg p-3 mt-2">
+                        value="{{ old('judul') }}"
+                        class="w-full border rounded-lg p-3 mt-2"
+                        placeholder="Judul modul akan dibuat otomatis"
+                        required>
+
+                    <p class="text-xs text-gray-500 mt-1">
+
+                        Judul dibuat otomatis berdasarkan
+                        Mata Pelajaran, Tingkat, dan Semester.
+                        Anda tetap dapat menyesuaikannya bila diperlukan.
+
+                    </p>
 
                 </div>
 
-                <div class="col-span-2">
 
-                    <label class="font-semibold">
+                {{-- KETERANGAN --}}
+                <div class="md:col-span-2">
+
+                    <label class="font-semibold text-slate-700">
 
                         Keterangan
 
@@ -194,20 +336,42 @@
                     <textarea
                         name="keterangan"
                         rows="5"
-                        class="w-full border rounded-lg p-3 mt-2"></textarea>
+                        class="w-full border rounded-lg p-3 mt-2"
+                        placeholder="Keterangan tambahan modul ajar (opsional)">{{ old('keterangan') }}</textarea>
 
                 </div>
 
             </div>
 
-            <div class="mt-8">
+
+            {{-- BUTTON --}}
+            <div class="mt-8 flex items-center gap-3">
 
                 <button
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg">
+                    type="submit"
+                    @if(
+                        auth()->user()->guru_id &&
+                        ($mapel->isEmpty() || $tingkats->isEmpty())
+                    )
+                        disabled
+                    @endif
+                    class="bg-blue-600 hover:bg-blue-700
+                           disabled:bg-gray-400
+                           disabled:cursor-not-allowed
+                           text-white px-8 py-3 rounded-lg">
 
                     💾 Simpan Modul
 
                 </button>
+
+
+                <a href="{{ route('modul-ajar.index') }}"
+                   class="bg-gray-100 hover:bg-gray-200
+                          text-gray-700 px-6 py-3 rounded-lg">
+
+                    Batal
+
+                </a>
 
             </div>
 
@@ -217,44 +381,87 @@
 
 </div>
 
+
 <script>
 
-function updateJudul(){
+document.addEventListener('DOMContentLoaded', function () {
 
-    let mapel=document.getElementById('mapel');
+    const mapel =
+        document.getElementById('mapel');
 
-    let tingkat=document.getElementById('tingkat');
+    const tingkat =
+        document.getElementById('tingkat');
 
-    let semester=document.getElementById('semester');
+    const semester =
+        document.getElementById('semester');
 
-    let judul=document.getElementById('judul');
+    const judul =
+        document.getElementById('judul');
 
-    if(mapel.selectedIndex<1){
 
-        judul.value='';
+    function updateJudul() {
 
-        return;
+        if (!mapel || !tingkat || !semester || !judul) {
+            return;
+        }
+
+
+        if (
+            !mapel.value ||
+            !tingkat.value
+        ) {
+
+            /*
+            | Jangan menghapus old input
+            | setelah validasi gagal.
+            */
+            if (!judul.value) {
+                judul.value = '';
+            }
+
+            return;
+        }
+
+
+        const namaMapel =
+            mapel.options[
+                mapel.selectedIndex
+            ].text.trim();
+
+
+        judul.value =
+            namaMapel +
+            ' Kelas ' +
+            tingkat.value +
+            ' Semester ' +
+            semester.value;
 
     }
 
-    let namaMapel=mapel.options[mapel.selectedIndex].text;
 
-    judul.value=
-        namaMapel+
-        " Kelas "+
-        tingkat.value+
-        " Semester "+
-        semester.value;
+    if (mapel) {
 
-}
+        mapel.addEventListener(
+            'change',
+            updateJudul
+        );
 
-document.getElementById('mapel').addEventListener('change',updateJudul);
+    }
 
-document.getElementById('tingkat').addEventListener('change',updateJudul);
 
-document.getElementById('semester').addEventListener('change',updateJudul);
+    if (tingkat) {
 
-window.onload=updateJudul;
+        tingkat.addEventListener(
+            'change',
+            updateJudul
+        );
+
+    }
+
+
+    updateJudul();
+
+});
 
 </script>
 

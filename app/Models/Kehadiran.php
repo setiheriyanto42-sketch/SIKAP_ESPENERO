@@ -28,6 +28,8 @@ class Kehadiran extends Model
 
         'kegiatan',
 
+        'sesi_mengajar_id',
+
     ];
 
     /*
@@ -53,12 +55,17 @@ class Kehadiran extends Model
 
     public function mapel()
     {
-        return $this->belongsTo(MataPelajaran::class,'mapel_id');
+        return $this->belongsTo(
+            MataPelajaran::class,
+            'mapel_id'
+        );
     }
 
     public function sesiMengajar()
     {
-        return $this->belongsTo(SesiMengajar::class);
+        return $this->belongsTo(
+            SesiMengajar::class,
+            'sesi_mengajar_id'
+        );
     }
-
 }

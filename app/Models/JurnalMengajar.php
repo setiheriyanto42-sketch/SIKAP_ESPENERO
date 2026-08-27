@@ -10,11 +10,17 @@ class JurnalMengajar extends Model
 
         'sesi_mengajar_id',
 
+        'perencanaan_pertemuan_id',
+
         'materi',
+
+        'materi_tercapai',
 
         'tujuan',
 
         'catatan',
+
+        'refleksi',
 
         'jumlah_hadir',
 
@@ -24,12 +30,29 @@ class JurnalMengajar extends Model
 
     /*
     |--------------------------------------------------------------------------
-    | RELASI
+    | RELASI SESI MENGAJAR
     |--------------------------------------------------------------------------
     */
 
     public function sesiMengajar()
     {
-        return $this->belongsTo(SesiMengajar::class);
+        return $this->belongsTo(
+            SesiMengajar::class,
+            'sesi_mengajar_id'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELASI PERENCANAAN PERTEMUAN
+    |--------------------------------------------------------------------------
+    */
+
+    public function perencanaanPertemuan()
+    {
+        return $this->belongsTo(
+            PerencanaanPertemuan::class,
+            'perencanaan_pertemuan_id'
+        );
     }
 }

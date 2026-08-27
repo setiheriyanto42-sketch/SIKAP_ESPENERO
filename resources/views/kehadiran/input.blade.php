@@ -2,118 +2,265 @@
 
 @section('content')
 
-    <x-slot name="header">
-        <h2 class="text-2xl font-bold text-gray-900">
-            Input Kehadiran Harian
-        </h2>
-    </x-slot>
+<div class="py-6">
 
-    <div class="py-6">
+    <div class="max-w-5xl mx-auto px-4">
 
-        <div class="max-w-5xl mx-auto">
+        {{-- ========================= --}}
+        {{-- NOTIFIKASI --}}
+        {{-- ========================= --}}
 
-            @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
-                    {{ session('success') }}
+        @if(session('success'))
+
+            <div class="mb-5 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+
+                ✅ {{ session('success') }}
+
+            </div>
+
+        @endif
+
+
+        @if($errors->any())
+
+            <div class="mb-5 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+
+                <div class="font-bold mb-2">
+                    Terjadi kesalahan:
                 </div>
-            @endif
 
-            <div class="bg-white shadow rounded-lg p-6">
+                <ul class="list-disc ml-5">
 
-                <h3 class="text-xl font-bold mb-6">
-                    Input Kehadiran Siswa
-                </h3>
+                    @foreach($errors->all() as $error)
 
-                {{-- FORM PILIH KELAS --}}
-                <form method="GET" action="{{ route('kehadiran.input') }}">
+                        <li>
+                            {{ $error }}
+                        </li>
 
-                    <div class="grid md:grid-cols-3 gap-4">
+                    @endforeach
 
-                        <div>
-                            <label class="font-semibold">
-                                Tanggal
-                            </label>
+                </ul>
 
-                            <input
-                                type="date"
-                                name="tanggal"
-                                value="{{ request('tanggal', date('Y-m-d')) }}"
-                                class="border rounded w-full p-2">
-                        </div>
+            </div>
 
-                        <div>
-                            <label class="font-semibold">
-                                Kelas
-                            </label>
+        @endif
 
-                            <select
-                                name="kelas_id"
-                                onchange="this.form.submit()"
-                                class="border rounded w-full p-2">
 
-                                <option value="">
-                                    -- Pilih Kelas --
-                                </option>
+        <div class="bg-white shadow rounded-xl p-6">
 
-                                @foreach($kelas as $k)
+            {{-- ========================= --}}
+            {{-- JUDUL --}}
+            {{-- ========================= --}}
 
-                                    <option
-                                        value="{{ $k->id }}"
-                                        {{ request('kelas_id')==$k->id ? 'selected' : '' }}>
+            <div class="mb-6">
 
-                                        {{ $k->nama_kelas }}
+                <h1 class="text-2xl font-bold text-gray-900">
 
-                                    </option>
+                    📋 Input Kehadiran Siswa
 
-                                @endforeach
+                </h1>
 
-                            </select>
+                <p class="text-gray-500 mt-1">
 
-                        </div>
+                    Pilih tanggal, kelas, dan mata pelajaran.
 
-                        <div>
+                </p>
 
-                            <label class="font-semibold">
+            </div>
 
-                                Mata Pelajaran
 
-                            </label>
+            {{-- ========================= --}}
+            {{-- FILTER --}}
+            {{-- ========================= --}}
 
-                            <select
-                            name="mapel_id"
-                            class="border rounded w-full p-2"
-                            onchange="this.form.submit()">
+            <form
+                method="GET"
+                action="{{ route('kehadiran.input') }}">
 
-                            <option value="">-- Pilih Mata Pelajaran --</option>
+                <div class="grid md:grid-cols-3 gap-4">
 
-                            @foreach($mapel as $m)
 
-                            <option
-                            value="{{ $m->id }}"
-                            {{ request('mapel_id')==$m->id?'selected':'' }}>
+                    {{-- TANGGAL --}}
 
-                            {{ $m->nama_mapel }}
+                    <div>
 
-                            </option>
+                        <label class="block font-semibold mb-2">
 
-                            @endforeach
+                            Tanggal
 
-                            </select>
+                        </label>
 
-                        </div>
+                        <input
+                            type="date"
+                            name="tanggal"
+                            value="{{ request('tanggal', date('Y-m-d')) }}"
+                            class="border border-gray-300 rounded-lg w-full p-2.5">
 
                     </div>
 
-                </form>
 
-                <hr class="my-6">
+                    {{-- KELAS --}}
 
-                @if(count($siswas))
+                    <div>
 
-                    <form method="POST"
-                          action="{{ route('kehadiran.simpan') }}">
+                        <label class="block font-semibold mb-2">
+
+                            Kelas
+
+                        </label>
+
+                        <select
+                            name="kelas_id"
+                            class="border border-gray-300 rounded-lg w-full p-2.5">
+
+                            <option value="">
+
+                                -- Pilih Kelas --
+
+                            </option>
+
+                            @foreach($kelas as $k)
+
+                                <option
+                                    value="{{ $k->id }}"
+                                    {{ (string) request('kelas_id') === (string) $k->id ? 'selected' : '' }}>
+
+                                    {{ $k->nama_kelas }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+
+                    {{-- MAPEL --}}
+
+                    <div>
+
+                        <label class="block font-semibold mb-2">
+
+                            Mata Pelajaran
+
+                        </label>
+
+                        <select
+                            name="mapel_id"
+                            class="border border-gray-300 rounded-lg w-full p-2.5">
+
+                            <option value="">
+
+                                -- Pilih Mata Pelajaran --
+
+                            </option>
+
+                            @foreach($mapel as $m)
+
+                                <option
+                                    value="{{ $m->id }}"
+                                    {{ (string) request('mapel_id') === (string) $m->id ? 'selected' : '' }}>
+
+                                    {{ $m->nama_mapel }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="mt-4 flex justify-end">
+
+                    <button
+                        type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg">
+
+                        🔍 Tampilkan Siswa
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <hr class="my-6">
+
+
+            {{-- ========================= --}}
+            {{-- DATA SISWA --}}
+            {{-- ========================= --}}
+
+            @if(
+                request('kelas_id') &&
+                request('mapel_id')
+            )
+
+
+                @if(count($siswas) > 0)
+
+
+                    {{-- HEADER DAFTAR SISWA --}}
+
+                    <div class="mb-5 flex justify-between items-center">
+
+                        <div>
+
+                            <h2 class="text-lg font-bold">
+
+                                👨‍🎓 Daftar Siswa
+
+                            </h2>
+
+                            <p class="text-sm text-gray-500">
+
+                                {{ count($siswas) }}
+                                siswa ditemukan.
+
+                            </p>
+
+                        </div>
+
+
+                        @if($kehadiranTersimpan->count() > 0)
+
+                            <div class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold">
+
+                                ✏ Data Kehadiran Tersimpan
+
+                            </div>
+
+                        @else
+
+                            <div class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
+
+                                Default: Hadir
+
+                            </div>
+
+                        @endif
+
+                    </div>
+
+
+                    {{-- ========================= --}}
+                    {{-- FORM KEHADIRAN --}}
+                    {{-- ========================= --}}
+
+                    <form
+                        method="POST"
+                        action="{{ route('kehadiran.simpan') }}">
 
                         @csrf
+
+
+                        {{-- FILTER TERSEMBUNYI --}}
 
                         <input
                             type="hidden"
@@ -130,81 +277,223 @@
                             name="mapel_id"
                             value="{{ request('mapel_id') }}">
 
-                        @foreach($siswas as $siswa)
 
-                            <div class="flex justify-between items-center border rounded-lg p-3 mb-2">
+                        {{-- ========================= --}}
+                        {{-- DAFTAR SISWA --}}
+                        {{-- ========================= --}}
 
-                                <div>
+                        <div class="space-y-3">
 
-                                    <strong>
+                            @foreach($siswas as $siswa)
 
-                                        {{ $siswa->nama }}
+                                @php
 
-                                    </strong>
+                                    $record =
+                                        $kehadiranTersimpan
+                                            ->get($siswa->id);
 
-                                    <br>
+                                    $statusSekarang =
+                                        $record
+                                            ? $record->status
+                                            : 'Hadir';
 
-                                    <small>
+                                @endphp
 
-                                        NIS {{ $siswa->nis }}
 
-                                    </small>
+                                <div class="border border-gray-200 rounded-xl p-4 hover:bg-gray-50">
+
+                                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+
+                                        {{-- SISWA --}}
+
+                                        <div class="flex items-center gap-4">
+
+                                            <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+
+                                                {{ $loop->iteration }}
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <div class="font-bold text-gray-900">
+
+                                                    {{ $siswa->nama }}
+
+                                                </div>
+
+                                                <div class="text-sm text-gray-500">
+
+                                                    NIS:
+                                                    {{ $siswa->nis ?: '-' }}
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        {{-- STATUS --}}
+
+                                        <div class="flex items-center gap-3">
+
+                                            <input
+                                                type="hidden"
+                                                name="siswa_id[]"
+                                                value="{{ $siswa->id }}">
+
+
+                                            <label class="text-sm font-semibold text-gray-600">
+
+                                                Status
+
+                                            </label>
+
+
+                                            <select
+                                                name="status[]"
+                                                class="border border-gray-300 rounded-lg p-2 min-w-[170px]">
+
+
+                                                <option
+                                                    value="Hadir"
+                                                    {{ $statusSekarang === 'Hadir' ? 'selected' : '' }}>
+
+                                                    ✅ Hadir
+
+                                                </option>
+
+
+                                                <option
+                                                    value="Izin"
+                                                    {{ $statusSekarang === 'Izin' ? 'selected' : '' }}>
+
+                                                    📝 Izin
+
+                                                </option>
+
+
+                                                <option
+                                                    value="Sakit"
+                                                    {{ $statusSekarang === 'Sakit' ? 'selected' : '' }}>
+
+                                                    🤒 Sakit
+
+                                                </option>
+
+
+                                                <option
+                                                    value="Alfa"
+                                                    {{ $statusSekarang === 'Alfa' ? 'selected' : '' }}>
+
+                                                    ❌ Alfa
+
+                                                </option>
+
+
+                                                <option
+                                                    value="Membolos"
+                                                    {{ $statusSekarang === 'Membolos' ? 'selected' : '' }}>
+
+                                                    🚫 Membolos
+
+                                                </option>
+
+
+                                                <option
+                                                    value="Terlambat"
+                                                    {{ $statusSekarang === 'Terlambat' ? 'selected' : '' }}>
+
+                                                    ⏰ Terlambat
+
+                                                </option>
+
+                                            </select>
+
+
+                                            @if($record)
+
+                                                <span
+                                                    title="Data sudah tersimpan"
+                                                    class="text-green-600 font-bold">
+
+                                                    ✓
+
+                                                </span>
+
+                                            @endif
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
-                                <div class="flex items-center gap-3">
+                            @endforeach
 
-                                    <input
-                                        type="hidden"
-                                        name="siswa_id[]"
-                                        value="{{ $siswa->id }}">
+                        </div>
 
-                                    <select
-                                        name="status[]"
-                                        class="border rounded p-2">
 
-                                        <option value="Hadir" selected>Hadir</option>
+                        {{-- ========================= --}}
+                        {{-- SIMPAN --}}
+                        {{-- ========================= --}}
 
-                                        <option value="Izin">Izin</option>
+                        <div class="mt-6 flex justify-end">
 
-                                        <option value="Sakit">Sakit</option>
+                            <button
+                                type="submit"
+                                class="bg-green-600 hover:bg-green-700 text-white font-semibold px-8 py-3 rounded-lg shadow">
 
-                                        <option value="Alfa">Alfa</option>
+                                @if($kehadiranTersimpan->count() > 0)
 
-                                        <option value="Membolos">Membolos</option>
+                                    💾 Update Kehadiran
 
-                                    </select>
+                                @else
 
-                                </div>
+                                    💾 Simpan Kehadiran
 
-                            </div>
+                                @endif
 
-                        @endforeach
+                            </button>
 
-                        <button
-                            type="submit"
-                            class="mt-5 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded">
-
-                            💾 Simpan Kehadiran
-
-                        </button>
+                        </div>
 
                     </form>
 
+
                 @else
 
-                    <div class="bg-yellow-100 border border-yellow-400 p-4 rounded">
+                    <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 p-4 rounded-lg">
 
-                        Silakan pilih kelas terlebih dahulu.
+                        ⚠️ Tidak ada siswa yang ditemukan pada kelas tersebut.
 
                     </div>
 
                 @endif
 
-            </div>
+
+            @else
+
+                <div class="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-lg">
+
+                    ℹ️ Pilih
+                    <strong>kelas</strong>
+                    dan
+                    <strong>mata pelajaran</strong>,
+                    kemudian klik
+                    <strong>Tampilkan Siswa</strong>.
+
+                </div>
+
+            @endif
 
         </div>
 
     </div>
+
+</div>
 
 @endsection

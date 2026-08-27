@@ -378,9 +378,8 @@
 
     <div class="flex flex-wrap justify-center gap-2">
 
-        <a
-            href="{{ route('mengajar.index',$item) }}"
-            class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg shadow">
+        <a href="{{ route('sesi.mulai', $item) }}"
+        class="bg-indigo-600 hover:bg-indigo-700 text-grey px-3 py-1 rounded">
 
             🚀 Mulai
 

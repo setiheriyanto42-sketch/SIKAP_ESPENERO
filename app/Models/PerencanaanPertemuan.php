@@ -40,10 +40,20 @@ class PerencanaanPertemuan extends Model
 
     protected $casts = [
 
-        'sudah_diajarkan'=>'boolean',
-        'ada_penilaian'=>'boolean',
+        'tanggal' => 'date',
+
+        'sudah_diajarkan' => 'boolean',
+
+        'ada_penilaian' => 'boolean',
 
     ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELASI BAB
+    |--------------------------------------------------------------------------
+    */
 
     public function bab()
     {
@@ -53,9 +63,20 @@ class PerencanaanPertemuan extends Model
         );
     }
 
-    public function modul()
-    {
-        return $this->bab->modul();
-    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | HELPER MODUL
+    |--------------------------------------------------------------------------
+    |
+    | Modul diperoleh melalui BAB:
+    |
+    | Pertemuan -> BAB -> Modul Ajar
+    |
+    */
+
+    public function getModulAttribute()
+    {
+        return $this->bab?->modul;
+    }
 }

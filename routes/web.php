@@ -24,6 +24,11 @@ use App\Http\Controllers\TemplateJadwalController;
 use App\Http\Controllers\PerencanaanPembelajaranController;
 use App\Http\Controllers\PerencanaanBabController;
 use App\Http\Controllers\PerencanaanPertemuanController;
+use App\Http\Controllers\PenilaianAkademikController;
+use App\Http\Controllers\UploadModulAjarController;
+use App\Http\Controllers\ModulAjarController;
+use App\Http\Controllers\ModulPertemuanController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -151,11 +156,16 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('user', UserController::class);
 
-    Route::resource('jurnal-mengajar', JurnalMengajarController::class)
-        ->only([
-            'create',
-            'store',
-        ]);
+    Route::resource(
+        'jurnal-mengajar',
+        JurnalMengajarController::class
+    )->only([
+        'index',
+        'create',
+        'store',
+        'edit',
+        'update',
+    ]);
 
     Route::post(
         'template-jadwal/{templateJadwal}/generate',
@@ -166,17 +176,58 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('template-jadwal', TemplateJadwalController::class);
 
+    Route::get(
+        '/modul-ajar/upload',
+        [UploadModulAjarController::class, 'create']
+    )->name('modul-ajar.upload');
+
+    Route::post(
+        '/modul-ajar/upload',
+        [UploadModulAjarController::class, 'store']
+    )->name('modul-ajar.upload.store');
+
+    Route::get(
+        '/modul-ajar/upload/preview',
+        [UploadModulAjarController::class, 'preview']
+    )->name('modul-ajar.upload.preview');
+
+    Route::delete(
+        '/modul-ajar/upload/cancel',
+        [UploadModulAjarController::class, 'cancel']
+    )->name('modul-ajar.upload.cancel');
+
+    Route::post(
+        '/modul-ajar/upload/analyze',
+        [UploadModulAjarController::class, 'analyze']
+    )->name('modul-ajar.upload.analyze');
+
+    Route::get(
+        '/modul-ajar/upload/analysis',
+        [UploadModulAjarController::class, 'analysis']
+    )->name('modul-ajar.upload.analysis');
+
+    Route::post(
+        '/modul-ajar/upload/structure',
+        [UploadModulAjarController::class, 'structure']
+    )->name('modul-ajar.upload.structure');
+
+    Route::post(
+        '/modul-ajar/upload/save',
+        [UploadModulAjarController::class,'save']
+    )->name('modul-ajar.upload.save');
+    
+    /*
+    |--------------------------------------------------------------------------
+    | MODUL AJAR
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource(
         'modul-ajar',
-        PerencanaanPembelajaranController::class
+        ModulAjarController::class
     )->parameters([
         'modul-ajar' => 'modulAjar'
     ]);
-
-    Route::post(
-        'modul-ajar/{modulAjar}/generate-kelas',
-        [PerencanaanPembelajaranController::class,'generateKelas']
-    )->name('modul-ajar.generate-kelas');
 
     Route::resource(
         'modul-bab',
@@ -242,6 +293,8 @@ Route::middleware('auth')->group(function () {
         '/pertemuan/{pertemuan}',
         [PerencanaanPertemuanController::class,'update']
     )->name('pertemuan.update');
+
+    
 
     /*
     |--------------------------------------------------------------------------
@@ -316,6 +369,49 @@ Route::middleware('auth')->group(function () {
         'template-jadwal/{templateJadwal}/generate',
         [TemplateJadwalController::class, 'generate']
     )->name('template-jadwal.generate');
+
+    Route::get(
+        '/penilaian-akademik',
+        [PenilaianAkademikController::class, 'index']
+    )->name('penilaian-akademik.index');
+
+
+    Route::get(
+        '/penilaian-akademik/{sesiMengajar}/create',
+        [PenilaianAkademikController::class, 'create']
+    )->name('penilaian-akademik.create');
+
+
+    Route::post(
+        '/penilaian-akademik/{sesiMengajar}',
+        [PenilaianAkademikController::class, 'store']
+    )->name('penilaian-akademik.store');
+
+    Route::get(
+        '/penilaian-akademik/nilai/{penilaianAkademik}',
+        [PenilaianAkademikController::class, 'show']
+    )->name('penilaian-akademik.show');
+
+    Route::get(
+        '/penilaian-akademik/nilai/{penilaianAkademik}/edit',
+        [PenilaianAkademikController::class, 'edit']
+    )->name('penilaian-akademik.edit');
+
+    Route::put(
+        '/penilaian-akademik/nilai/{penilaianAkademik}',
+        [PenilaianAkademikController::class, 'update']
+    )->name('penilaian-akademik.update');
+
+ 
+    Route::get(
+        'modul-ajar/bab/{bab}/pertemuan/create',
+        [ModulPertemuanController::class, 'create']
+    )->name('modul-ajar.pertemuan.create');
+
+    Route::post(
+        'modul-ajar/bab/{bab}/pertemuan',
+        [ModulPertemuanController::class, 'store']
+    )->name('modul-ajar.pertemuan.store');
 
 });
 

@@ -10,9 +10,9 @@ class SiswaImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        // ==========================================
-        // Lewati jika baris kosong
-        // ==========================================
+        // =====================================================
+        // 1. Lewati baris yang benar-benar kosong
+        // =====================================================
 
         if (
             empty($row['nis']) &&
@@ -22,71 +22,183 @@ class SiswaImport implements ToModel, WithHeadingRow
             return null;
         }
 
-        // ==========================================
-        // Normalisasi Jenis Kelamin
-        // ==========================================
+        // =====================================================
+        // 2. Ambil dan bersihkan data dasar
+        // =====================================================
 
-        $jk = strtoupper(trim($row['jenis_kelamin'] ?? ''));
+        $nis  = trim((string) ($row['nis'] ?? ''));
+        $nisn = trim((string) ($row['nisn'] ?? ''));
+        $nama = trim((string) ($row['nama'] ?? ''));
 
-        if (in_array($jk, ['L', 'LAKI-LAKI', 'LAKI LAKI'])) {
+        // =====================================================
+        // 3. Nama wajib ada
+        // =====================================================
+
+        if ($nama === '') {
+            return null;
+        }
+
+        // =====================================================
+        // 4. NIS dan NISN harus tersedia
+        // =====================================================
+
+        if ($nis === '' || $nisn === '') {
+            return null;
+        }
+
+        // =====================================================
+        // 5. Normalisasi Jenis Kelamin
+        // =====================================================
+
+        $jk = strtoupper(
+            trim((string) ($row['jenis_kelamin'] ?? ''))
+        );
+
+        if (
+            in_array($jk, [
+                'L',
+                'LAKI-LAKI',
+                'LAKI LAKI',
+                'LAKI'
+            ])
+        ) {
             $jk = 'L';
-        } elseif (in_array($jk, ['P', 'PEREMPUAN'])) {
+
+        } elseif (
+            in_array($jk, [
+                'P',
+                'PEREMPUAN'
+            ])
+        ) {
             $jk = 'P';
+
+        } else {
+            $jk = null;
         }
 
-        // ==========================================
-        // Skip jika NIS sudah ada
-        // ==========================================
+        // =====================================================
+        // 6. Jangan memasukkan NIS yang sudah ada
+        // =====================================================
 
-        if (Siswa::where('nis', $row['nis'])->exists()) {
+        if (
+            Siswa::where('nis', $nis)->exists()
+        ) {
             return null;
         }
 
-        // ==========================================
-        // Skip jika NISN sudah ada
-        // ==========================================
+        // =====================================================
+        // 7. Jangan memasukkan NISN yang sudah ada
+        // =====================================================
 
-        if (Siswa::where('nisn', $row['nisn'])->exists()) {
+        if (
+            Siswa::where('nisn', $nisn)->exists()
+        ) {
             return null;
         }
 
-        // ==========================================
-        // Skip jika nama kosong
-        // ==========================================
-
-        if (empty($row['nama'])) {
-            return null;
-        }
-
-        // ==========================================
-        // Pecah kelas dan rombel
+        // =====================================================
+        // 8. Baca Kelas + Rombel
+        //
         // Contoh:
-        // 7A -> kelas=7 rombel=A
-        // 8C -> kelas=8 rombel=C
-        // ==========================================
+        // 7A
+        // 7 A
+        // 8B
+        // 9F
+        // =====================================================
 
-        $kelasExcel = strtoupper(trim($row['kelas'] ?? ''));
+        $kelasExcel = strtoupper(
+            trim((string) ($row['kelas'] ?? ''))
+        );
 
-        $kelas = (int) substr($kelasExcel, 0, 1);
+        $kelasExcel = str_replace(
+            [' ', '-', '_'],
+            '',
+            $kelasExcel
+        );
 
-        $rombel = substr($kelasExcel, 1);
+        $kelas = null;
+        $rombel = null;
 
-        // ==========================================
-        // Simpan ke database
-        // ==========================================
+        // Bentuk 7A / 8B / 9F
+        if (preg_match('/^([789])([A-F])$/', $kelasExcel, $match)) {
+
+            $kelas = (int) $match[1];
+            $rombel = $match[2];
+
+        } else {
+
+            // =================================================
+            // Jika format kelas tidak dikenali
+            // jangan memasukkan data secara sembarangan
+            // =================================================
+
+            return null;
+        }
+
+        // =====================================================
+        // 9. Data tambahan
+        // =====================================================
+
+        $tempatLahir = trim(
+            (string) ($row['tempat_lahir'] ?? '')
+        );
+
+        $tanggalLahir = $row['tanggal_lahir'] ?? null;
+
+        $agama = trim(
+            (string) ($row['agama'] ?? '')
+        );
+
+        $alamat = trim(
+            (string) ($row['alamat'] ?? '')
+        );
+
+        $namaAyah = trim(
+            (string) ($row['nama_ayah'] ?? '')
+        );
+
+        $namaIbu = trim(
+            (string) ($row['nama_ibu'] ?? '')
+        );
+
+        $nik = trim(
+            (string) ($row['nik'] ?? '')
+        );
+
+        $noHp = trim(
+            (string) ($row['no_hp'] ?? '')
+        );
+
+        $email = trim(
+            (string) ($row['email'] ?? '')
+        );
+
+        // =====================================================
+        // 10. Simpan siswa baru
+        // =====================================================
 
         return new Siswa([
 
-            'nis'             => trim($row['nis']),
-            'nisn'            => trim($row['nisn']),
-            'nama'            => trim($row['nama']),
+            'nis'             => $nis,
+            'nisn'            => $nisn,
+            'nama'            => $nama,
             'jenis_kelamin'   => $jk,
+
+            'tempat_lahir'    => $tempatLahir,
+            'tanggal_lahir'   => $tanggalLahir,
+            'agama'           => $agama,
+
+            'alamat'          => $alamat,
+
+            'nama_ayah'       => $namaAyah,
+            'nama_ibu'        => $namaIbu,
+
+            'nik'             => $nik,
+            'no_hp'           => $noHp,
+            'email'           => $email,
 
             'kelas'           => $kelas,
             'rombel'          => $rombel,
-
-            'no_hp'           => trim($row['no_hp'] ?? ''),
-            'alamat'          => trim($row['alamat'] ?? ''),
 
             'aktif'           => true,
 

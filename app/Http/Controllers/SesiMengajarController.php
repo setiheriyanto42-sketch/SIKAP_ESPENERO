@@ -8,89 +8,145 @@ use Illuminate\Support\Facades\Auth;
 
 class SesiMengajarController extends Controller
 {
+    /**
+     * Mulai sesi pembelajaran.
+     */
     public function mulai(JadwalMengajar $jadwalMengajar)
     {
+        $jadwalMengajar->load([
+            'guruMengajar.guru',
+            'guruMengajar.kelas',
+            'guruMengajar.mataPelajaran',
+        ]);
+
         $guruMengajar = $jadwalMengajar->guruMengajar;
 
-        // Pastikan hanya guru pemilik jadwal
-        if (Auth::user()->guru_id != $guruMengajar->guru_id) {
-            abort(403);
+        if (!$guruMengajar) {
+            return redirect()
+                ->route('jadwal-mengajar.index')
+                ->with('error', 'Penugasan guru pada jadwal ini tidak ditemukan.');
+        }
+
+        $user = Auth::user();
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAK AKSES
+        |--------------------------------------------------------------------------
+        |
+        | ADMIN:
+        | Boleh membuka semua jadwal untuk pengelolaan dan pengujian.
+        |
+        | GURU:
+        | Hanya boleh membuka jadwal miliknya sendiri.
+        |
+        */
+
+        $isAdmin = $user->isAdmin();
+
+        if (
+            !$isAdmin &&
+            (int) $user->guru_id !== (int) $guruMengajar->guru_id
+        ) {
+            abort(403, 'Anda tidak memiliki akses ke jadwal mengajar ini.');
         }
 
         /*
         |--------------------------------------------------------------------------
-        | Cari atau buat sesi hari ini
+        | CARI / BUAT SESI HARI INI
         |--------------------------------------------------------------------------
         */
 
         $sesi = SesiMengajar::firstOrCreate(
-
             [
                 'jadwal_mengajar_id' => $jadwalMengajar->id,
-                'tanggal' => today(),
+                'tanggal' => today()->toDateString(),
             ],
-
             [
                 'guru_mengajar_id' => $guruMengajar->id,
                 'jam_mulai' => now(),
                 'status' => 'Sedang',
             ]
-
         );
 
         /*
         |--------------------------------------------------------------------------
-        | Kalau sesi sudah selesai tidak boleh dibuka lagi
+        | SESI SUDAH SELESAI
         |--------------------------------------------------------------------------
         */
 
-        if ($sesi->status == 'Selesai') {
-
+        if ($sesi->status === 'Selesai') {
             return redirect()
                 ->route('dashboard')
-                ->with('warning', 'Pembelajaran hari ini sudah selesai.');
-
+                ->with(
+                    'warning',
+                    'Pembelajaran pada jadwal ini hari ini sudah selesai.'
+                );
         }
 
         /*
         |--------------------------------------------------------------------------
-        | Kalau status masih Belum
+        | AKTIFKAN SESI
         |--------------------------------------------------------------------------
         */
 
-        if ($sesi->status == 'Belum') {
-
+        if ($sesi->status === 'Belum') {
             $sesi->update([
-
                 'status' => 'Sedang',
-
                 'jam_mulai' => now(),
-
             ]);
-
         }
 
-        return redirect()->route('mengajar.index', $jadwalMengajar);
+        /*
+        |--------------------------------------------------------------------------
+        | LANJUT KE HALAMAN MENGAJAR / ABSENSI
+        |--------------------------------------------------------------------------
+        */
+
+        return redirect()->route(
+            'mengajar.index',
+            $jadwalMengajar
+        );
     }
 
+
+    /**
+     * Selesaikan sesi pembelajaran.
+     */
     public function selesai(SesiMengajar $sesiMengajar)
     {
-        if ($sesiMengajar->status == 'Selesai') {
+        $sesiMengajar->load('guruMengajar');
 
-            return redirect()->route('dashboard');
+        $user = Auth::user();
 
+        $isAdmin = $user->isAdmin();
+
+        if (
+            !$isAdmin &&
+            (int) $user->guru_id !== (int) $sesiMengajar->guruMengajar?->guru_id
+        ) {
+            abort(403, 'Anda tidak memiliki akses ke sesi mengajar ini.');
+        }
+
+        if ($sesiMengajar->status === 'Selesai') {
+            return redirect()
+                ->route('dashboard')
+                ->with(
+                    'warning',
+                    'Pembelajaran ini sudah selesai.'
+                );
         }
 
         $sesiMengajar->update([
-
             'status' => 'Selesai',
-
             'jam_selesai' => now(),
-
         ]);
 
         return redirect()
             ->route('dashboard')
-            ->with('success', 'Pembelajaran selesai.');
+            ->with(
+                'success',
+                'Pembelajaran selesai.'
+            );
     }
 }

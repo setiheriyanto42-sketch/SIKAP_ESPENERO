@@ -4,6 +4,37 @@
 
 <div class="max-w-7xl mx-auto">
 
+{{-- =============================== --}}
+{{-- FLASH MESSAGE --}}
+{{-- =============================== --}}
+
+@if(session('success'))
+
+    <div class="mb-6 bg-green-50 border border-green-300
+                text-green-700 px-5 py-4 rounded-xl">
+
+        <div class="font-semibold">
+            ✅ {{ session('success') }}
+        </div>
+
+    </div>
+
+@endif
+
+
+@if(session('error'))
+
+    <div class="mb-6 bg-red-50 border border-red-300
+                text-red-700 px-5 py-4 rounded-xl">
+
+        <div class="font-semibold">
+            ⚠️ {{ session('error') }}
+        </div>
+
+    </div>
+
+@endif
+
     <div class="bg-white rounded-xl shadow-lg p-8">
 
         <div class="flex justify-between items-center mb-8">
@@ -46,51 +77,118 @@
         <div class="grid grid-cols-2 gap-8">
 
             {{-- ========================= --}}
-            {{-- KELAS --}}
+            {{-- KELAS PENGGUNA MODUL --}}
             {{-- ========================= --}}
 
             <div>
 
                 <div class="border rounded-xl p-5">
 
-                    <h2 class="text-xl font-bold mb-4">
+                    <div class="flex items-center justify-between mb-4">
 
-                        🏫 Kelas Pengguna Modul
+                        <div>
 
-                    </h2>
+                            <h2 class="text-xl font-bold">
+                                🏫 Kelas Pengguna Modul
+                            </h2>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Kelas disesuaikan dengan penugasan mengajar guru.
+                            </p>
+
+                        </div>
+
+                        <span class="bg-blue-100 text-blue-700
+                                    px-3 py-1 rounded-full text-sm font-semibold">
+
+                            {{ $modulAjar->kelas->count() }} Kelas
+
+                        </span>
+
+                    </div>
+
 
                     @forelse($modulAjar->kelas as $item)
 
-                        <div class="py-2 border-b">
+                        <div class="flex items-center justify-between
+                                    py-3 border-b last:border-b-0">
 
-                            {{ $item->kelas->nama_kelas }}
+                            <div class="flex items-center gap-3">
+
+                                <div class="w-9 h-9 rounded-lg
+                                            bg-blue-100 text-blue-700
+                                            flex items-center justify-center">
+
+                                    🏫
+
+                                </div>
+
+                                <div>
+
+                                    <div class="font-semibold text-gray-800">
+
+                                        {{ $item->kelas->nama_kelas
+                                            ?? (($item->kelas->tingkat ?? '') . ($item->kelas->rombel ?? '')) }}
+
+                                    </div>
+
+                                    <div class="text-xs text-gray-500">
+
+                                        Kelas yang diampu
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <span class="bg-green-100 text-green-700
+                                        px-3 py-1 rounded-full text-xs font-semibold">
+
+                                ✓ Aktif
+
+                            </span>
 
                         </div>
 
                     @empty
 
-                        <div class="text-gray-500">
+                        <div class="bg-yellow-50 border border-yellow-200
+                                    rounded-lg p-4 text-sm text-yellow-700">
 
-                            Belum ada kelas.
+                            ⚠ Belum ada kelas yang terhubung dengan modul ini.
 
                         </div>
 
                     @endforelse
 
+
                     <form
-                        action="{{ route('modul-ajar.generate-kelas',$modulAjar) }}"
-                        method="POST">
+                        action="{{ route('modul-ajar.generate-kelas', $modulAjar) }}"
+                        method="POST"
+                        class="mt-5">
 
                         @csrf
 
                         <button
-                            class="mt-5 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+                            type="submit"
+                            class="bg-blue-600 hover:bg-blue-700
+                                text-white px-5 py-3 rounded-lg
+                                shadow transition">
 
-                            ⚡ Generate Semua Kelas
+                            🔄 Sinkronkan Kelas Diampu
 
                         </button>
 
                     </form>
+
+
+                    <div class="mt-3 text-xs text-gray-500">
+
+                        💡 Sistem hanya akan mengambil kelas yang sesuai dengan
+                        penugasan mengajar Anda untuk mata pelajaran ini.
+
+                    </div>
 
                 </div>
 
@@ -168,7 +266,7 @@
                                             @csrf
 
                                             <button
-                                                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow">
+                                                class="bg-indigo-600 hover:bg-indigo-700 text-grey px-4 py-2 rounded-lg shadow">
 
                                                 ⚡ Generate Pertemuan
 
@@ -217,13 +315,54 @@
 
                                     </div>
 
-                                    <a
-                                        href="{{ route('pertemuan.show',$pertemuan) }}"
-                                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                                    <div class="flex items-center gap-2">
 
-                                        Buka
+                                        {{-- BUKA PERTEMUAN --}}
+                                        <a
+                                            href="{{ route('pertemuan.show', $pertemuan) }}"
+                                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
 
-                                    </a>
+                                            📖 Buka
+
+                                        </a>
+
+
+                                        {{-- HAPUS PERTEMUAN --}}
+                                        @if(!$pertemuan->sudah_diajarkan)
+
+                                            <form
+                                                action="{{ route('pertemuan.destroy', $pertemuan) }}"
+                                                method="POST"
+                                                onsubmit="return confirm(
+                                                    'Yakin ingin menghapus Pertemuan {{ $pertemuan->pertemuan_ke }}?'
+                                                )">
+
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button
+                                                    type="submit"
+                                                    class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+
+                                                    🗑 Hapus
+
+                                                </button>
+
+                                            </form>
+
+                                        @else
+
+                                            <span
+                                                class="bg-gray-100 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed"
+                                                title="Pertemuan sudah digunakan dalam pembelajaran">
+
+                                                🔒 Digunakan
+
+                                            </span>
+
+                                        @endif
+
+                                    </div>
 
                                 </div>
 
@@ -260,6 +399,8 @@
                                     </button>
 
                                 </form>
+
+                                
 
                             </div>
 

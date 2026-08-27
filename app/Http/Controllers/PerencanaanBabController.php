@@ -109,16 +109,110 @@ class PerencanaanBabController extends Controller
             );
     }
 
-    public function destroy(PerencanaanBab $bab)
+    public function destroy($id)
     {
-        $modul = $bab->perencanaan_pembelajaran_id;
+        /*
+        |--------------------------------------------------------------------------
+        | CARI BAB BERDASARKAN ID
+        |--------------------------------------------------------------------------
+        |
+        | Kita ambil manual berdasarkan ID supaya tidak bergantung pada
+        | nama parameter Route Model Binding.
+        |
+        */
+
+        $bab = \App\Models\PerencanaanBab::with([
+            'modul',
+            'pertemuans'
+        ])->findOrFail($id);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PROTEKSI KEPEMILIKAN GURU
+        |--------------------------------------------------------------------------
+        |
+        | Guru hanya boleh menghapus BAB dari Modul Ajar miliknya sendiri.
+        |
+        */
+
+        $user = auth()->user();
+
+        if (
+            $user->guru_id &&
+            $bab->modul &&
+            $bab->modul->guru_id != $user->guru_id
+        ) {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus BAB ini.');
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PASTIKAN MODUL INDUK ADA
+        |--------------------------------------------------------------------------
+        */
+
+        $modulAjarId = $bab->perencanaan_pembelajaran_id;
+
+        if (!$modulAjarId || !$bab->modul) {
+
+            return redirect()
+                ->route('modul-ajar.index')
+                ->with(
+                    'error',
+                    'Modul induk dari BAB tidak ditemukan.'
+                );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | JANGAN HAPUS BAB JIKA SUDAH MEMILIKI PERTEMUAN
+        |--------------------------------------------------------------------------
+        |
+        | Ini penting supaya perencanaan pembelajaran tidak terhapus
+        | secara tidak sengaja.
+        |
+        */
+
+        if ($bab->pertemuans->count() > 0) {
+
+            return redirect()
+                ->route(
+                    'modul-ajar.show',
+                    [
+                        'modulAjar' => $modulAjarId
+                    ]
+                )
+                ->with(
+                    'error',
+                    'BAB tidak dapat dihapus karena sudah memiliki Pertemuan. Hapus Pertemuan terlebih dahulu jika BAB benar-benar ingin dihapus.'
+                );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS BAB
+        |--------------------------------------------------------------------------
+        */
 
         $bab->delete();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KEMBALI KE DETAIL MODUL
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route(
                 'modul-ajar.show',
-                $modul
+                [
+                    'modulAjar' => $modulAjarId
+                ]
             )
             ->with(
                 'success',

@@ -11,11 +11,63 @@ use Illuminate\Support\Facades\Storage;
 
 class SiswaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $siswas = Siswa::orderBy('nama')->get();
+        $query = Siswa::query();
 
-        return view('siswa.index', compact('siswas'));
+        // Pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', '%' . $search . '%')
+                    ->orWhere('nis', 'like', '%' . $search . '%')
+                    ->orWhere('nisn', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Filter kelas
+        if ($request->filled('kelas')) {
+            $query->where('kelas', $request->kelas);
+        }
+
+        // Filter rombel
+        if ($request->filled('rombel')) {
+            $query->where('rombel', $request->rombel);
+        }
+
+        // Filter status
+        if ($request->filled('aktif')) {
+            $query->where('aktif', $request->aktif);
+        }
+
+        $siswas = $query
+            ->orderBy('nama')
+            ->paginate(20)
+            ->withQueryString();
+
+        // Data untuk dropdown filter
+        $kelas = Siswa::query()
+            ->whereNotNull('kelas')
+            ->where('kelas', '!=', '')
+            ->select('kelas')
+            ->distinct()
+            ->orderBy('kelas')
+            ->pluck('kelas');
+
+        $rombels = Siswa::query()
+            ->whereNotNull('rombel')
+            ->where('rombel', '!=', '')
+            ->select('rombel')
+            ->distinct()
+            ->orderBy('rombel')
+            ->pluck('rombel');
+
+        return view('siswa.index', compact(
+            'siswas',
+            'kelas',
+            'rombels'
+        ));
     }
 
     public function create()
@@ -26,8 +78,8 @@ class SiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nis' => 'required|unique:siswas',
-            'nisn' => 'required|unique:siswas',
+            'nis' => 'nullable|unique:siswas,nis',
+            'nisn' => 'nullable|unique:siswas,nisn',
             'nama' => 'required',
             'jenis_kelamin' => 'required',
             'kelas' => 'required',
@@ -58,7 +110,9 @@ class SiswaController extends Controller
             'alamat'          => $request->alamat,
             'nama_ayah'       => $request->nama_ayah,
             'nama_ibu'        => $request->nama_ibu,
+            'nik'             => $request->nik,
             'no_hp'           => $request->no_hp,
+            'email'           => $request->email,
             'kelas'           => $request->kelas,
             'rombel'          => $request->rombel,
             'foto'            => $foto,

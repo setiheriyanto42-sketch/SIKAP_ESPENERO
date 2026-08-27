@@ -2,59 +2,267 @@
 
 @section('content')
 
-    
+<div class="w-full">
 
-    <div class="py-6">
+    <form
+        method="POST"
+        action="{{ route('mengajar.store', $jadwalMengajar) }}"
+        id="formAbsensi">
 
-        <div class="max-w-7xl mx-auto">
+        @csrf
 
-            <div class="bg-white shadow rounded-xl p-6">
+        <input
+            type="hidden"
+            name="sesi_id"
+            value="{{ $sesi->id }}">
 
-            <div class="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 rounded-2xl p-6 text-white mb-6 shadow-xl">
+        {{-- ========================================================= --}}
+        {{-- HEADER MENGAJAR --}}
+        {{-- ========================================================= --}}
+        <div class="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600
+                    rounded-2xl p-6 text-white mb-6 shadow-xl">
 
-                <div class="flex justify-between items-center flex-wrap gap-4">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-5">
 
-                    <div>
+                <div>
 
-                        <h1 class="text-3xl font-bold">
+                    <h1 class="text-2xl md:text-3xl font-bold">
+                        📚 {{ $jadwalMengajar->guruMengajar->mataPelajaran->nama_mapel }}
+                    </h1>
 
-                            📚 {{ $jadwalMengajar->guruMengajar->mataPelajaran->nama_mapel }}
+                    <div class="mt-3 space-y-1 text-blue-100">
 
-                        </h1>
-
-                        <p class="mt-2 text-blue-100">
-
-                            👨‍🏫 {{ auth()->user()->guru->nama }}
-
+                        <p>
+                            👨‍🏫
+                            {{ auth()->user()->guru?->nama ?? auth()->user()->name }}
                         </p>
 
-                        <p class="text-blue-100">
-
+                        <p>
                             🏫 {{ $kelas->nama_kelas }}
-
                         </p>
 
-                        <p class="text-blue-100">
-
+                        <p>
                             🗓️ {{ now()->translatedFormat('l, d F Y') }}
+                        </p>
 
+                        <p>
+                            🕐
+                            {{ $jadwalMengajar->jam_mulai }}
+                            -
+                            {{ $jadwalMengajar->jam_selesai }}
                         </p>
 
                     </div>
 
-                    <div class="text-center">
+                </div>
 
-                        <div class="text-sm">
+                <div class="bg-white/15 rounded-xl px-6 py-4 text-center">
 
-                            Status
+                    <div class="text-sm text-blue-100">
+                        Status Pembelajaran
+                    </div>
+
+                    <div class="text-xl font-bold mt-1">
+                        🟢 Sedang Mengajar
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {{-- ========================================================= --}}
+        {{-- AREA UTAMA --}}
+        {{-- ========================================================= --}}
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+
+            {{-- ===================================================== --}}
+            {{-- DAFTAR SISWA --}}
+            {{-- ===================================================== --}}
+            <div class="xl:col-span-3">
+
+                <div class="bg-white border shadow-sm rounded-2xl p-5 md:p-6">
+
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-5">
+
+                        <div>
+
+                            <h2 class="text-xl font-bold text-gray-800">
+                                👨‍🎓 Daftar Siswa
+                            </h2>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Pilih status kehadiran setiap siswa.
+                            </p>
 
                         </div>
 
-                        <div class="text-2xl font-bold">
+                        <div class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
 
-                            🟢 Sedang Mengajar
+                            Default: Semua Hadir
 
                         </div>
+
+                    </div>
+
+
+                    {{-- PENCARIAN --}}
+                    <div class="mb-6">
+
+                        <input
+                            id="cariSiswa"
+                            type="text"
+                            placeholder="🔍 Cari nama atau NIS siswa..."
+                            class="w-full border-2 border-blue-200 rounded-xl
+                                   px-4 py-3
+                                   focus:ring-2 focus:ring-blue-300
+                                   focus:border-blue-500">
+
+                    </div>
+
+
+                    {{-- TOMBOL MASSAL --}}
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+
+                        <button
+                            type="button"
+                            id="btnSemuaHadir"
+                            class="bg-green-600 hover:bg-green-700 text-white
+                                   px-4 py-3 rounded-xl font-semibold">
+
+                            🟢 Semua Hadir
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btnSemuaIzin"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white
+                                   px-4 py-3 rounded-xl font-semibold">
+
+                            🟡 Semua Izin
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btnSemuaSakit"
+                            class="bg-blue-500 hover:bg-blue-600 text-white
+                                   px-4 py-3 rounded-xl font-semibold">
+
+                            🔵 Semua Sakit
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btnSemuaAlfa"
+                            class="bg-red-600 hover:bg-red-700 text-white
+                                   px-4 py-3 rounded-xl font-semibold">
+
+                            🔴 Semua Alfa
+
+                        </button>
+
+                    </div>
+
+
+                    {{-- SISWA --}}
+                    <div class="space-y-4">
+
+                        @forelse($siswas as $i => $siswa)
+
+                            <div
+                                class="card-siswa bg-green-50 border border-gray-200
+                                       rounded-2xl p-4 shadow-sm
+                                       transition-all duration-200">
+
+                                <input
+                                    type="hidden"
+                                    name="siswa_id[]"
+                                    value="{{ $siswa->id }}">
+
+                                <div class="flex justify-between items-start gap-3 mb-4">
+
+                                    <div>
+
+                                        <h3 class="text-lg font-bold text-gray-800">
+
+                                            👨‍🎓 {{ $siswa->nama }}
+
+                                        </h3>
+
+                                        <p class="text-sm text-gray-500">
+
+                                            NIS : {{ $siswa->nis }}
+
+                                        </p>
+
+                                    </div>
+
+                                    <div class="bg-blue-100 text-blue-700
+                                                px-3 py-1 rounded-full text-sm">
+
+                                        No {{ $loop->iteration }}
+
+                                    </div>
+
+                                </div>
+
+
+                                @php
+                                    $statusList = [
+                                        ['Hadir', '🟢'],
+                                        ['Izin', '🟡'],
+                                        ['Sakit', '🔵'],
+                                        ['Alfa', '🔴'],
+                                        ['Terlambat', '🟠'],
+                                        ['Membolos', '⚫'],
+                                    ];
+                                @endphp
+
+
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+
+                                    @foreach($statusList as $status)
+
+                                        <label
+                                            class="status-item border bg-white
+                                                   rounded-xl p-3 cursor-pointer
+                                                   hover:bg-blue-50 transition">
+
+                                            <input
+                                                class="hidden status-radio"
+                                                type="radio"
+                                                name="status[{{ $i }}]"
+                                                value="{{ $status[0] }}"
+                                                {{ $status[0] === 'Hadir' ? 'checked' : '' }}>
+
+                                            <span class="block">
+                                                {{ $status[1] }}
+                                                {{ $status[0] }}
+                                            </span>
+
+                                        </label>
+
+                                    @endforeach
+
+                                </div>
+
+                            </div>
+
+                        @empty
+
+                            <div class="bg-yellow-50 border border-yellow-200
+                                        text-yellow-800 rounded-xl p-5">
+
+                                Tidak ada siswa pada kelas ini.
+
+                            </div>
+
+                        @endforelse
 
                     </div>
 
@@ -62,247 +270,48 @@
 
             </div>
 
-                <div class="mb-6">
 
-                    <h2 class="text-2xl font-bold">
+            {{-- ===================================================== --}}
+            {{-- RINGKASAN --}}
+            {{-- ===================================================== --}}
+            <div class="xl:col-span-1">
 
-                        {{ $jadwalMengajar->guruMengajar->mataPelajaran->nama_mapel }}
+                <div class="xl:sticky xl:top-6">
 
-                    </h2>
+                    <div class="bg-white rounded-2xl shadow-lg border p-5">
 
-                    <p class="text-gray-500">
+                        <h2 class="text-xl font-bold mb-5">
 
-                        {{ $kelas->nama_kelas }}
+                            📊 Ringkasan Absensi
 
-                        |
+                        </h2>
 
-                        {{ $jadwalMengajar->jam_mulai }}
 
-                        -
+                        {{-- PROGRESS --}}
+                        <div class="mb-6">
 
-                        {{ $jadwalMengajar->jam_selesai }}
-
-                    </p>
-
-                </div>
-
-                <form method="POST"
-                      action="{{ route('mengajar.store',$jadwalMengajar) }}">
-
-                <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
-
-                 <div class="xl:col-span-3">
-
-                    @csrf
-
-                    <input
-                        type="hidden"
-                        name="sesi_id"
-                        value="{{ $sesi->id }}">
-
-                    <div class="mb-6">
-
-                        <input
-                            id="cariSiswa"
-                            type="text"
-                            placeholder="🔍 Cari nama atau NIS siswa..."
-                            class="w-full border-2 border-blue-200 rounded-xl px-5 py-4 text-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
-
-                    </div>
-
-                    <div class="space-y-5">
-
-                    @foreach($siswas as $i => $siswa)
-
-                    <div class="card-siswa bg-white border rounded-2xl shadow transition-all duration-300
-
-                        <input type="hidden"
-                            name="siswa_id[]"
-                            value="{{ $siswa->id }}">
-
-                        <div class="flex justify-between items-start mb-4">
-
-                            <div>
-
-                                <h3 class="text-xl font-bold">
-
-                                    👨‍🎓 {{ $siswa->nama }}
-
-                                </h3>
-
-                                <p class="text-gray-500">
-
-                                    NIS : {{ $siswa->nis }}
-
-                                </p>
-
-                            </div>
-
-                            <div class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-
-                                No {{ $loop->iteration }}
-
-                            </div>
-
-                        </div>
-
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-
-                            @php
-
-                            $statusList = [
-
-                                ['Hadir','🟢'],
-
-                                ['Izin','🟡'],
-
-                                ['Sakit','🔵'],
-
-                                ['Alfa','🔴'],
-
-                                ['Terlambat','🟠'],
-
-                                ['Membolos','⚫']
-
-                            ];
-
-                            @endphp
-
-                            @foreach($statusList as $status)
-
-                            <label class="status-item border rounded-xl p-3 cursor-pointer hover:bg-blue-50 transition-all duration-200">
-
-                                <input
-                                class="hidden"
-                                type="radio"
-                                name="status[{{ $i }}]"
-                                value="{{ $status[0] }}"
-                                {{ $status[0]=='Hadir'?'checked':'' }}>
+                            <div class="flex justify-between text-sm">
 
                                 <span>
+                                    Progress
+                                </span>
 
-                                {{ $status[1] }}
+                                <span
+                                    id="progressPersen"
+                                    class="font-semibold">
 
-                                {{ $status[0] }}
+                                    100%
 
                                 </span>
 
-                            </label>
+                            </div>
 
-                            @endforeach
+                            <div class="w-full bg-gray-200 rounded-full h-3 mt-2">
 
-                        </div>
-
-                    </div>
-
-                    @endforeach
-
-                    </div>
-
-                        </div>
-
-                        <div>
-
-                            <div class="sticky top-6">
-
-                                <div class="bg-white rounded-2xl shadow-lg border p-6">
-
-                                    <h2 class="text-xl font-bold mb-5">
-
-                                        📊 Ringkasan Absensi
-
-                                    </h2>
-
-                                    <div class="mt-5">
-
-                                        <div class="flex justify-between text-sm">
-
-                                            <span>Progress</span>
-
-                                            <span id="progressPersen">
-
-                                                100%
-
-                                            </span>
-
-                                        </div>
-
-                                        <div class="w-full bg-gray-200 rounded-full h-3 mt-2">
-
-                                            <div
-
-                                                id="progressBar"
-
-                                                class="bg-green-600 h-3 rounded-full"
-
-                                                style="width:100%">
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="space-y-4">
-
-                                        <div class="flex justify-between">
-
-                                            <span>🟢 Hadir</span>
-
-                                            <span id="jmlHadir2">0</span>
-
-                                        </div>
-
-                                        <div class="flex justify-between">
-
-                                            <span>🟡 Izin</span>
-
-                                            <span id="jmlIzin2">0</span>
-
-                                        </div>
-
-                                        <div class="flex justify-between">
-
-                                            <span>🔵 Sakit</span>
-
-                                            <span id="jmlSakit2">0</span>
-
-                                        </div>
-
-                                        <div class="flex justify-between">
-
-                                            <span>🔴 Alfa</span>
-
-                                            <span id="jmlAlfa2">0</span>
-
-                                        </div>
-
-                                        <div class="flex justify-between">
-
-                                            <span>🟠 Terlambat</span>
-
-                                            <span id="jmlTerlambat2">0</span>
-
-                                        </div>
-
-                                        <div class="flex justify-between">
-
-                                            <span>⚫ Membolos</span>
-
-                                            <span id="jmlMembolos2">0</span>
-
-                                        </div>
-
-                                    </div>
-
-                                    <hr class="my-5">
-
-                                    <button
-                                        class="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg">
-
-                                        💾 SIMPAN ABSENSI
-
-                                    </button>
+                                <div
+                                    id="progressBar"
+                                    class="bg-green-600 h-3 rounded-full transition-all"
+                                    style="width:100%">
 
                                 </div>
 
@@ -310,365 +319,418 @@
 
                         </div>
 
-                    </div>
 
-                    <hr class="my-6">
+                        {{-- JUMLAH --}}
+                        <div class="space-y-3">
 
-                    <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-6 text-center">
+                            <div class="flex justify-between bg-green-50 rounded-lg p-3">
 
-                        <div class="bg-green-100 rounded-lg p-3">
+                                <span>🟢 Hadir</span>
 
-                            <div class="font-bold text-green-700">
-
-                                Hadir
-
-                            </div>
-
-                            <div id="jmlHadir" class="text-2xl font-bold">
-
-                                {{ count($siswas) }}
+                                <strong id="jmlHadir">
+                                    {{ count($siswas) }}
+                                </strong>
 
                             </div>
 
-                        </div>
+                            <div class="flex justify-between bg-yellow-50 rounded-lg p-3">
 
-                        <div class="bg-yellow-100 rounded-lg p-3">
+                                <span>🟡 Izin</span>
 
-                            <div class="font-bold text-yellow-700">
-
-                                Izin
-
-                            </div>
-
-                            <div id="jmlIzin" class="text-2xl font-bold">
-
-                                0
+                                <strong id="jmlIzin">
+                                    0
+                                </strong>
 
                             </div>
 
-                        </div>
+                            <div class="flex justify-between bg-blue-50 rounded-lg p-3">
 
-                        <div class="bg-blue-100 rounded-lg p-3">
+                                <span>🔵 Sakit</span>
 
-                            <div class="font-bold text-blue-700">
-
-                                Sakit
-
-                            </div>
-
-                            <div id="jmlSakit" class="text-2xl font-bold">
-
-                                0
+                                <strong id="jmlSakit">
+                                    0
+                                </strong>
 
                             </div>
 
-                        </div>
+                            <div class="flex justify-between bg-red-50 rounded-lg p-3">
 
-                        <div class="bg-red-100 rounded-lg p-3">
+                                <span>🔴 Alfa</span>
 
-                            <div class="font-bold text-red-700">
-
-                                Alfa
+                                <strong id="jmlAlfa">
+                                    0
+                                </strong>
 
                             </div>
 
-                            <div id="jmlAlfa" class="text-2xl font-bold">
+                            <div class="flex justify-between bg-orange-50 rounded-lg p-3">
 
-                                0
+                                <span>🟠 Terlambat</span>
+
+                                <strong id="jmlTerlambat">
+                                    0
+                                </strong>
+
+                            </div>
+
+                            <div class="flex justify-between bg-gray-100 rounded-lg p-3">
+
+                                <span>⚫ Membolos</span>
+
+                                <strong id="jmlMembolos">
+                                    0
+                                </strong>
 
                             </div>
 
                         </div>
 
-                        <div class="bg-orange-100 rounded-lg p-3">
 
-                            <div class="font-bold text-orange-700">
+                        <hr class="my-6">
 
-                                Terlambat
 
-                            </div>
+                        {{-- SATU-SATUNYA TOMBOL SIMPAN --}}
+                        <button
+                            type="submit"
+                            id="btnSimpanAbsensi"
+                            class="w-full bg-green-600 hover:bg-green-700
+                                   text-white py-4 px-4 rounded-xl
+                                   font-bold shadow transition">
 
-                            <div id="jmlTerlambat" class="text-2xl font-bold">
+                            💾 SIMPAN ABSENSI & LANJUT JURNAL
 
-                                0
+                        </button>
 
-                            </div>
+                        <p class="text-xs text-gray-500 text-center mt-3">
 
-                        </div>
+                            Setelah disimpan, Anda akan masuk ke Jurnal Mengajar.
 
-                        <div class="bg-gray-200 rounded-lg p-3">
-
-                            <div class="font-bold">
-
-                                Membolos
-
-                            </div>
-
-                            <div id="jmlMembolos" class="text-2xl font-bold">
-
-                                0
-
-                            </div>
-
-                        </div>
+                        </p>
 
                     </div>
 
-                    <div class="flex flex-wrap gap-3 justify-between items-center">
-
-                        <button
-
-                            type="button"
-
-                            id="btnSemuaHadir"
-
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded">
-
-                            ✔ Semua Hadir
-
-                        </button>
-
-                        <button
-                        type="button"
-                        id="btnSemuaIzin"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-3 rounded-lg">
-
-                        🟡 Semua Izin
-
-                        </button>
-
-                        <button
-                        type="button"
-                        id="btnSemuaSakit"
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-3 rounded-lg">
-
-                        🔵 Semua Sakit
-
-                        </button>
-
-                        <button
-                        type="button"
-                        id="btnSemuaAlfa"
-                        class="bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg">
-
-                        🔴 Semua Alfa
-
-                        </button>
-
-                        <button
-
-                            class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded">
-
-                            💾 Simpan Absensi
-
-                        </button>
-
-                        
-
-                    </div>
-
-                </form>
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+    </form>
 
-    <style>
+</div>
 
-    .status-item{
 
-        user-select:none;
+<style>
 
+    .status-item {
+        user-select: none;
     }
 
-    .status-item input:checked + span{
-
-        font-weight:bold;
-
+    .status-item:has(input:checked) {
+        border-color: rgb(37 99 235);
+        box-shadow: 0 0 0 1px rgb(37 99 235);
     }
 
-    </style>
-
-    <script>
-
-    function hitung(){
-
-        let hadir=0;
-        let izin=0;
-        let sakit=0;
-        let alfa=0;
-        let terlambat=0;
-        let membolos=0;
-
-        document.querySelectorAll("input[type=radio]:checked").forEach(r=>{
-
-            switch(r.value){
-
-                case "Hadir":
-                    hadir++;
-                break;
-
-                case "Izin":
-                    izin++;
-                break;
-
-                case "Sakit":
-                    sakit++;
-                break;
-
-                case "Alfa":
-                    alfa++;
-                break;
-
-                case "Terlambat":
-                    terlambat++;
-                break;
-
-                case "Membolos":
-                    membolos++;
-                break;
-
-            }
-
-        });
-
-        document.getElementById("jmlHadir").innerHTML=hadir;
-        document.getElementById("jmlIzin").innerHTML=izin;
-        document.getElementById("jmlSakit").innerHTML=sakit;
-        document.getElementById("jmlAlfa").innerHTML=alfa;
-        document.getElementById("jmlTerlambat").innerHTML=terlambat;
-        document.getElementById("jmlMembolos").innerHTML=membolos;
-
-    const total = hadir + izin + sakit + alfa + terlambat + membolos;
-
-    const persen = Math.round((total / {{ count($siswas) }}) * 100);
-
-    document.getElementById("progressBar").style.width = persen + "%";
-
-    document.getElementById("progressPersen").innerHTML = persen + "%";
-
+    .status-item input:checked + span {
+        font-weight: 700;
     }
 
-    document.querySelectorAll("input[type=radio]").forEach(r=>{
+</style>
 
-        r.addEventListener("change",hitung);
 
-    });
+<script>
 
-        document.getElementById("btnSemuaHadir").onclick=function(){
+document.addEventListener('DOMContentLoaded', function () {
 
-        pilihSemua("Hadir");
+    const totalSiswa = {{ count($siswas) }};
 
-    };
+    const form = document.getElementById('formAbsensi');
 
-        hitung();
+    const btnSimpan = document.getElementById('btnSimpanAbsensi');
 
-        
-            const cari = document.getElementById('cariSiswa');
+    const cari = document.getElementById('cariSiswa');
 
-        cari.addEventListener('keyup', function(){
 
-            let keyword = this.value.toLowerCase();
+    /*
+    |--------------------------------------------------------------------------
+    | HITUNG ABSENSI
+    |--------------------------------------------------------------------------
+    */
 
-            document.querySelectorAll('.card-siswa').forEach(card=>{
+    function hitung() {
 
-                let teks = card.innerText.toLowerCase();
+        let hadir = 0;
+        let izin = 0;
+        let sakit = 0;
+        let alfa = 0;
+        let terlambat = 0;
+        let membolos = 0;
 
-                if(teks.includes(keyword)){
+        document
+            .querySelectorAll('.status-radio:checked')
+            .forEach(function (radio) {
 
-                    card.style.display='block';
+                switch (radio.value) {
 
-                }else{
+                    case 'Hadir':
+                        hadir++;
+                        break;
 
-                    card.style.display='none';
+                    case 'Izin':
+                        izin++;
+                        break;
 
+                    case 'Sakit':
+                        sakit++;
+                        break;
+
+                    case 'Alfa':
+                        alfa++;
+                        break;
+
+                    case 'Terlambat':
+                        terlambat++;
+                        break;
+
+                    case 'Membolos':
+                        membolos++;
+                        break;
                 }
+
+            });
+
+
+        document.getElementById('jmlHadir').textContent = hadir;
+
+        document.getElementById('jmlIzin').textContent = izin;
+
+        document.getElementById('jmlSakit').textContent = sakit;
+
+        document.getElementById('jmlAlfa').textContent = alfa;
+
+        document.getElementById('jmlTerlambat').textContent = terlambat;
+
+        document.getElementById('jmlMembolos').textContent = membolos;
+
+
+        const terisi =
+            hadir +
+            izin +
+            sakit +
+            alfa +
+            terlambat +
+            membolos;
+
+
+        const persen = totalSiswa > 0
+            ? Math.round((terisi / totalSiswa) * 100)
+            : 0;
+
+
+        document.getElementById('progressPersen').textContent =
+            persen + '%';
+
+        document.getElementById('progressBar').style.width =
+            persen + '%';
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | WARNA CARD SISWA
+    |--------------------------------------------------------------------------
+    */
+
+    function ubahWarnaCard(radio) {
+
+        const card = radio.closest('.card-siswa');
+
+        if (!card) {
+            return;
+        }
+
+        card.classList.remove(
+            'bg-green-50',
+            'bg-yellow-50',
+            'bg-blue-50',
+            'bg-red-50',
+            'bg-orange-50',
+            'bg-gray-100'
+        );
+
+
+        switch (radio.value) {
+
+            case 'Hadir':
+                card.classList.add('bg-green-50');
+                break;
+
+            case 'Izin':
+                card.classList.add('bg-yellow-50');
+                break;
+
+            case 'Sakit':
+                card.classList.add('bg-blue-50');
+                break;
+
+            case 'Alfa':
+                card.classList.add('bg-red-50');
+                break;
+
+            case 'Terlambat':
+                card.classList.add('bg-orange-50');
+                break;
+
+            case 'Membolos':
+                card.classList.add('bg-gray-100');
+                break;
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EVENT STATUS
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .querySelectorAll('.status-radio')
+        .forEach(function (radio) {
+
+            radio.addEventListener('change', function () {
+
+                ubahWarnaCard(this);
+
+                hitung();
 
             });
 
         });
 
-    document.querySelectorAll("input[type=radio]").forEach(radio=>{
 
-    radio.addEventListener("change",function(){
+    /*
+    |--------------------------------------------------------------------------
+    | PILIH SEMUA
+    |--------------------------------------------------------------------------
+    */
 
-            const card = this.closest(".card-siswa");
+    function pilihSemua(status) {
 
-            card.classList.remove(
-                "bg-green-50",
-                "bg-yellow-50",
-                "bg-blue-50",
-                "bg-red-50",
-                "bg-orange-50",
-                "bg-gray-100"
-            );
+        document
+            .querySelectorAll(
+                '.status-radio[value="' + status + '"]'
+            )
+            .forEach(function (radio) {
 
-            switch(this.value){
+                radio.checked = true;
 
-                case "Hadir":
-                    card.classList.add("bg-green-50");
-                break;
+                ubahWarnaCard(radio);
 
-                case "Izin":
-                    card.classList.add("bg-yellow-50");
-                break;
+            });
 
-                case "Sakit":
-                    card.classList.add("bg-blue-50");
-                break;
+        hitung();
+    }
 
-                case "Alfa":
-                    card.classList.add("bg-red-50");
-                break;
 
-                case "Terlambat":
-                    card.classList.add("bg-orange-50");
-                break;
+    document.getElementById('btnSemuaHadir')
+        .addEventListener('click', function () {
 
-                case "Membolos":
-                    card.classList.add("bg-gray-100");
-                break;
-
-            }
+            pilihSemua('Hadir');
 
         });
+
+
+    document.getElementById('btnSemuaIzin')
+        .addEventListener('click', function () {
+
+            pilihSemua('Izin');
+
+        });
+
+
+    document.getElementById('btnSemuaSakit')
+        .addEventListener('click', function () {
+
+            pilihSemua('Sakit');
+
+        });
+
+
+    document.getElementById('btnSemuaAlfa')
+        .addEventListener('click', function () {
+
+            pilihSemua('Alfa');
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PENCARIAN SISWA
+    |--------------------------------------------------------------------------
+    */
+
+    cari.addEventListener('input', function () {
+
+        const keyword = this.value.toLowerCase().trim();
+
+        document
+            .querySelectorAll('.card-siswa')
+            .forEach(function (card) {
+
+                const teks = card.innerText.toLowerCase();
+
+                card.style.display =
+                    teks.includes(keyword)
+                        ? ''
+                        : 'none';
+
+            });
 
     });
 
-    function pilihSemua(status){
 
-        document.querySelectorAll("input[value='"+status+"']").forEach(r=>{
+    /*
+    |--------------------------------------------------------------------------
+    | CEGAH DOUBLE SUBMIT
+    |--------------------------------------------------------------------------
+    */
 
-            r.checked=true;
+    form.addEventListener('submit', function () {
 
-            r.dispatchEvent(new Event('change'));
+        btnSimpan.disabled = true;
+
+        btnSimpan.innerHTML =
+            '⏳ MENYIMPAN ABSENSI...';
+
+        btnSimpan.classList.add(
+            'opacity-60',
+            'cursor-not-allowed'
+        );
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | INITIAL
+    |--------------------------------------------------------------------------
+    */
+
+    document
+        .querySelectorAll('.status-radio:checked')
+        .forEach(function (radio) {
+
+            ubahWarnaCard(radio);
 
         });
 
-        hitung();
+    hitung();
 
-    }
+});
 
-    document.getElementById("btnSemuaIzin").onclick=function(){
-
-        pilihSemua("Izin");
-
-    };
-
-    document.getElementById("btnSemuaSakit").onclick=function(){
-
-        pilihSemua("Sakit");
-
-    };
-
-    document.getElementById("btnSemuaAlfa").onclick=function(){
-
-        pilihSemua("Alfa");
-
-    };
-
-    </script>
+</script>
 
 @endsection
