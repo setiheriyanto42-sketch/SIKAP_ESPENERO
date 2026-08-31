@@ -77,12 +77,47 @@ class GuruMengajarController extends Controller
 
     public function edit(GuruMengajar $guruMengajar)
     {
-        //
+        $gurus = Guru::where('aktif', 1)
+            ->orderBy('nama')
+            ->get();
+
+        $kelas = Kelas::where('aktif', 1)
+            ->orderBy('tingkat')
+            ->orderBy('rombel')
+            ->get();
+
+        $mapel = MataPelajaran::where('aktif', 1)
+            ->orderBy('nama_mapel')
+            ->get();
+
+        return view('guru_mengajar.edit', compact(
+            'guruMengajar',
+            'gurus',
+            'kelas',
+            'mapel'
+        ));
     }
 
     public function update(Request $request, GuruMengajar $guruMengajar)
     {
-        //
+        $request->validate([
+            'guru_id' => 'required|exists:gurus,id',
+            'kelas_id' => 'required|exists:kelas,id',
+            'mata_pelajaran_id' => 'required|exists:mata_pelajarans,id',
+            'jumlah_jam' => 'required|integer|min:1|max:20',
+        ]);
+
+        $guruMengajar->update([
+            'guru_id' => $request->guru_id,
+            'kelas_id' => $request->kelas_id,
+            'mata_pelajaran_id' => $request->mata_pelajaran_id,
+            'jumlah_jam' => $request->jumlah_jam,
+            'aktif' => $request->has('aktif'),
+        ]);
+
+        return redirect()
+            ->route('guru-mengajar.index')
+            ->with('success', 'Penugasan berhasil diperbarui.');
     }
 
     public function destroy(GuruMengajar $guruMengajar)

@@ -149,8 +149,8 @@
 
                                 <div class="flex justify-center gap-2">
 
-                                    <a href="#"
-                                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
+                                    <a href="{{ route('guru-mengajar.edit', $item) }}"
+                                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded">
 
                                         Edit
 

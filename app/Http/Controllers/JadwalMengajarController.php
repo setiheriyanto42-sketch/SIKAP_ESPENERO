@@ -82,11 +82,52 @@ class JadwalMengajarController extends Controller
             'jam_ke'           => 'required|integer|min:1',
         ]);
 
-        $guruMengajar = GuruMengajar::findOrFail($request->guru_mengajar_id);
-    
-    
-        
-        // dd($request->all());
+        $guruMengajar = GuruMengajar::findOrFail(
+            $request->guru_mengajar_id
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL TEMPLATE JADWAL AKTIF
+        |--------------------------------------------------------------------------
+        */
+
+        $template = \App\Models\TemplateJadwal::where('aktif', 1)->first();
+
+        if (!$template) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'jam_ke' => 'Template Jadwal aktif belum tersedia.'
+                ]);
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL JAM PELAJARAN BERDASARKAN JP
+        |--------------------------------------------------------------------------
+        */
+
+        $jamPelajaran = \App\Models\TemplateJamPelajaran::where(
+            'template_jadwal_id',
+            $template->id
+        )
+        ->where('jenis', 'belajar')
+        ->where('urutan', $request->jam_ke)
+        ->first();
+
+        if (!$jamPelajaran) {
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'jam_ke' => 'JP ' . $request->jam_ke .
+                        ' tidak ditemukan pada Template Jadwal aktif.'
+                ]);
+
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -100,14 +141,16 @@ class JadwalMengajarController extends Controller
 
                 $q->where('guru_id', $guruMengajar->guru_id);
 
-            })->exists();
+            })
+            ->exists();
 
         if ($guruBentrok) {
 
             return back()
                 ->withInput()
                 ->withErrors([
-                    'guru_mengajar_id' => 'Guru sudah memiliki jadwal pada JP tersebut.'
+                    'guru_mengajar_id' =>
+                        'Guru sudah memiliki jadwal pada hari dan JP tersebut.'
                 ]);
 
         }
@@ -124,38 +167,38 @@ class JadwalMengajarController extends Controller
 
                 $q->where('kelas_id', $guruMengajar->kelas_id);
 
-            })->exists();
+            })
+            ->exists();
 
         if ($kelasBentrok) {
 
             return back()
                 ->withInput()
                 ->withErrors([
-                    'guru_mengajar_id' => 'Kelas sudah memiliki jadwal pada JP tersebut.'
+                    'guru_mengajar_id' =>
+                        'Kelas sudah memiliki jadwal pada hari dan JP tersebut.'
                 ]);
 
         }
 
         /*
         |--------------------------------------------------------------------------
-        | AMBIL JAM DARI TEMPLATE
+        | SIMPAN JADWAL
         |--------------------------------------------------------------------------
+        | Jam diambil langsung dari Template Jam Pelajaran.
         */
-
-        
 
         JadwalMengajar::create([
 
-            'guru_mengajar_id' => $request->guru_mengajar_id,
+            'guru_mengajar_id' => $guruMengajar->id,
 
             'hari'             => $request->hari,
 
             'jam_ke'           => $request->jam_ke,
 
-            // sementara kita isi otomatis
-            'jam_mulai'        => '07:00:00',
+            'jam_mulai'        => $jamPelajaran->jam_mulai,
 
-            'jam_selesai'      => '07:40:00',
+            'jam_selesai'      => $jamPelajaran->jam_selesai,
 
             'aktif'            => true,
 
@@ -163,7 +206,10 @@ class JadwalMengajarController extends Controller
 
         return redirect()
             ->route('jadwal-mengajar.index')
-            ->with('success', 'Jadwal berhasil disimpan.');
+            ->with(
+                'success',
+                'Jadwal berhasil disimpan.'
+            );
     }
 
     public function show(JadwalMengajar $jadwalMengajar)

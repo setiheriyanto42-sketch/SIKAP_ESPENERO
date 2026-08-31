@@ -45,14 +45,51 @@
 
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="mt-8">
 
-                        <label>Jam Masuk</label>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">
+                            🕐 Pengaturan Jam Awal Pembelajaran
+                        </h3>
 
-                        <input
-                            type="time"
-                            name="jam_masuk"
-                            class="form-control">
+                        <p class="text-sm text-gray-500 mb-5">
+                            Atur waktu dimulainya JP 1 untuk masing-masing hari.
+                            Waktu ini digunakan sistem untuk menghitung JP berikutnya.
+                        </p>
+
+                        @php
+                            $hari = [
+                                'Senin',
+                                'Selasa',
+                                'Rabu',
+                                'Kamis',
+                                'Jumat',
+                                'Sabtu',
+                            ];
+                        @endphp
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                            @foreach($hari as $h)
+
+                                <div class="bg-slate-50 border rounded-xl p-4">
+
+                                    <label class="block font-semibold text-slate-700 mb-2">
+                                        {{ $h }}
+                                    </label>
+
+                                    <input
+                                        type="time"
+                                        name="hari[{{ $h }}][jam_mulai]"
+                                        value="{{ old('hari.'.$h.'.jam_mulai', '07:00') }}"
+                                        class="w-full border rounded-lg px-3 py-2"
+                                        required
+                                    >
+
+                                </div>
+
+                            @endforeach
+
+                        </div>
 
                     </div>
 

@@ -5,29 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TemplateJamPelajaran extends Model
+class TemplateHari extends Model
 {
     use HasFactory;
 
-    protected $table = 'template_jam_pelajarans';
+    protected $table = 'template_haris';
 
-    protected $fillable = [
+   protected $fillable = [
         'template_jadwal_id',
-        'template_hari_id',
         'hari',
-        'nama_template',
-        'jp',
-        'nomor_jp',
-        'jam_ke',
         'jam_mulai',
-        'jam_selesai',
-        'jenis',
         'aktif',
-        'urutan',
+        'istirahat_setelah',
+        'durasi_istirahat',
+        'ishoma_setelah',
+        'durasi_ishoma',
     ];
 
     protected $casts = [
         'aktif' => 'boolean',
+        'istirahat_setelah' => 'integer',
+        'durasi_istirahat' => 'integer',
+        'ishoma_setelah' => 'integer',
+        'durasi_ishoma' => 'integer',
     ];
 
     public function templateJadwal()
@@ -38,10 +38,10 @@ class TemplateJamPelajaran extends Model
         );
     }
 
-    public function templateHari()
+    public function jamPelajaran()
     {
-        return $this->belongsTo(
-            TemplateHari::class,
+        return $this->hasMany(
+            TemplateJamPelajaran::class,
             'template_hari_id'
         );
     }

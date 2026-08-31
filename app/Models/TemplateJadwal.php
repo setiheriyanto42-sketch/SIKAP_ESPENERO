@@ -28,6 +28,25 @@ class TemplateJadwal extends Model
 
     public function jamPelajaran()
     {
-        return $this->hasMany(TemplateJamPelajaran::class);
+        return $this->hasMany(
+            TemplateJamPelajaran::class,
+            'template_jadwal_id'
+        );
+    }
+
+    public function templateHaris()
+    {
+        return $this->hasMany(
+            TemplateHari::class,
+            'template_jadwal_id'
+        );
+    }
+
+    public function hariMulai()
+    {
+        return $this->hasMany(
+            TemplateHari::class,
+            'template_jadwal_id'
+        );
     }
 }

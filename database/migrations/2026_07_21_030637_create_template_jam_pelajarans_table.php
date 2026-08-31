@@ -18,9 +18,16 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->foreignId('template_hari_id')
+                ->nullable()
+                ->constrained('template_haris')
+                ->cascadeOnDelete();
+
             $table->string('nama_template'); // Reguler, Ramadhan, Ujian, ANBK
 
             $table->unsignedTinyInteger('jp')->nullable();
+
+            $table->unsignedTinyInteger('jam_ke')->nullable();
 
             $table->time('jam_mulai');
 

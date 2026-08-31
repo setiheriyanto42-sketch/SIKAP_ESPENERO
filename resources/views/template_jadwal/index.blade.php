@@ -165,20 +165,28 @@
 
                             <div class="flex justify-center gap-2 flex-wrap">
 
-                                <a href="{{ route('template-jadwal.show',$item) }}"
-                                class="bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded">
+                                <a href="{{ route('template-jadwal.hari', $item) }}"
+                                class="bg-indigo-600 hover:bg-indigo-700 text-Grey px-3 py-2 rounded">
+
+                                    📅 Setting Hari
+
+                                </a>
+
+                                <a href="{{ route('template-jadwal.show', $item) }}"
+                                class="bg-sky-500 hover:bg-sky-600 text-Grey px-3 py-2 rounded">
 
                                     👁 Detail
 
                                 </a>
 
-                                <form action="{{ route('template-jadwal.generate',$item) }}"
-                                    method="POST">
+                                <form action="{{ route('template-jadwal.generate', $item) }}"
+                                    method="POST"
+                                    class="inline">
 
                                     @csrf
 
-                                    <button
-                                        class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded">
+                                    <button type="submit"
+                                            class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded">
 
                                         ⚙ Generate
 
@@ -186,19 +194,29 @@
 
                                 </form>
 
-                                <a href="#"
+                                <a href="{{ route('template-jadwal.edit', $item) }}"
                                 class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">
 
                                     ✏ Edit
 
                                 </a>
 
-                                <a href="#"
-                                class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded">
+                                <form action="{{ route('template-jadwal.destroy', $item) }}"
+                                    method="POST"
+                                    class="inline"
+                                    onsubmit="return confirm('Yakin ingin menghapus template ini?')">
 
-                                    🗑 Hapus
+                                    @csrf
+                                    @method('DELETE')
 
-                                </a>
+                                    <button type="submit"
+                                            class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded">
+
+                                        🗑 Hapus
+
+                                    </button>
+
+                                </form>
 
                             </div>
 

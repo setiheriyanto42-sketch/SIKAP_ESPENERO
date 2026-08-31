@@ -28,6 +28,8 @@ use App\Http\Controllers\PenilaianAkademikController;
 use App\Http\Controllers\UploadModulAjarController;
 use App\Http\Controllers\ModulAjarController;
 use App\Http\Controllers\ModulPertemuanController;
+use App\Http\Controllers\TemplateHariController;
+
 
 
 Route::get('/', function () {
@@ -167,14 +169,7 @@ Route::middleware('auth')->group(function () {
         'update',
     ]);
 
-    Route::post(
-        'template-jadwal/{templateJadwal}/generate',
-        [TemplateJadwalController::class, 'generate']
-    )->name('template-jadwal.generate');
-
-    Route::resource('template-jam', TemplateJamPelajaranController::class);
-
-    Route::resource('template-jadwal', TemplateJadwalController::class);
+    
 
     Route::get(
         '/modul-ajar/upload',
@@ -215,6 +210,8 @@ Route::middleware('auth')->group(function () {
         '/modul-ajar/upload/save',
         [UploadModulAjarController::class,'save']
     )->name('modul-ajar.upload.save');
+
+    
     
     /*
     |--------------------------------------------------------------------------
@@ -412,6 +409,66 @@ Route::middleware('auth')->group(function () {
         'modul-ajar/bab/{bab}/pertemuan',
         [ModulPertemuanController::class, 'store']
     )->name('modul-ajar.pertemuan.store');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEMPLATE JADWAL
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'template-jadwal',
+        TemplateJadwalController::class
+    )->parameters([
+        'template-jadwal' => 'templateJadwal',
+    ]);
+
+    Route::post(
+        'template-jadwal/{templateJadwal}/generate',
+        [TemplateJadwalController::class, 'generate']
+    )->name('template-jadwal.generate');
+
+    Route::get(
+        'template-jadwal/{templateJadwal}/hari',
+        [TemplateJadwalController::class, 'hari']
+    )->name('template-jadwal.hari');
+
+    Route::post(
+        'template-jadwal/{templateJadwal}/hari',
+        [TemplateJadwalController::class, 'updateHari']
+    )->name('template-jadwal.update-hari');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEMPLATE HARI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        'template-hari',
+        [TemplateHariController::class, 'index']
+    )->name('template-hari.index');
+
+    Route::put(
+        'template-hari/{templateHari}',
+        [TemplateHariController::class, 'update']
+    )->name('template-hari.update');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEMPLATE JAM PELAJARAN
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource(
+        'template-jam',
+        TemplateJamPelajaranController::class
+    )->parameters([
+        'template-jam' => 'templateJam',
+    ]);
 
 });
 
